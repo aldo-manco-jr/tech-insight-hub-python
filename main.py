@@ -649,9 +649,13 @@ In aggiunta, è necessario semplificare il testo eliminando le parti ridondanti 
 In aggiunta, il testo deve essere completo, senza omettere alcuna informazione o concetto espresso.
             """
 
-        if data["More In Depth"] == "Yes":
+        if data["In-Depth Analysis"] == "Yes":
             prompt += """
 In aggiunta, analizza attentamente il testo [TEXT] per comprendere i ragionamenti logici espressi e la materia di cui si sta trattando, e arricchisci il contenuto aggiungendo ulteriori dettagli di tua conoscenza che risultino pertinenti al contesto.
+            """
+        elif data["In-Depth Analysis"] == "No":
+            prompt += """
+In aggiunta, analizza attentamente il testo [TEXT] per comprendere i ragionamenti logici espressi e di cosa si sta parlando. Ricordati di non aggiungere niente che vada oltre questi ragionamenti.
             """
 
         if data["Length"] > 0:
@@ -683,7 +687,7 @@ Additionally, it is necessary to simplify the text by removing redundant parts a
 Additionally, the text must be comprehensive, without omitting any expressed information or concepts.
                     """
 
-        if data["More In Depth"] == "Yes":
+        if data["In-Depth Analysis"] == "Yes":
             prompt += """
 Additionally, carefully analyze the text [TEXT] to understand the logical reasoning presented and the subject matter at hand, and enhance the content by adding additional details from your knowledge that are relevant to the context.
                     """
@@ -793,7 +797,7 @@ def main():
         translate = st.selectbox("Translate", array_answers, index=array_answers.index("No"))
         style = st.text_area("Style")
         simplify = st.selectbox("Simplify", array_answers, index=array_answers.index("No"))
-        more_in_depth = st.selectbox("More In Depth", array_answers, index=array_answers.index("No"))
+        in_depth_analysis = st.selectbox("In-Depth Analysis", array_answers, index=array_answers.index("No"))
         length = st.number_input("Length", min_value=0, max_value=4000, value=0, step=1)
 
         if st.button("Generate Prompt"):
@@ -803,7 +807,7 @@ def main():
                 "Translate": translate,
                 "Style": style,
                 "Simplify": simplify,
-                "More In Depth": more_in_depth,
+                "In-Depth Analysis": in_depth_analysis,
                 "Length": length
             }
             prompt = generate_text_utility_prompt(data)
