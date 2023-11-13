@@ -12,6 +12,8 @@ In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comp
 
 Infine, utilizza un linguaggio chiaro e rispettoso, mantenendo un tono gentile e professionale per garantire una comunicazione efficace. Sei qui per aiutare l'utente a ottenere una comprensione completa di [DETAILS] riguardo [TOPIC].
 
+Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ulteriori commenti.
+
 ### SPIEGAZIONE DELL'ESPERTO ###
 """
 
@@ -25,6 +27,8 @@ L'obiettivo è condurre questa spiegazione in modo chiaro e semplice, aiutando l
 In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comprensione dell'utente riguardo ai dettagli [DETAILS] nell'ambito di [TOPIC].
 
 Infine, utilizza un linguaggio chiaro e rispettoso, mantenendo un tono gentile e professionale per garantire una comunicazione efficace. Sei qui per aiutare l'utente a ottenere una comprensione completa di [DETAILS] riguardo [TOPIC].
+
+Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ulteriori commenti.
 
 ### SPIEGAZIONE DELL'ESPERTO ###
 """
@@ -42,6 +46,8 @@ In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comp
 
 Infine, utilizza un linguaggio chiaro e rispettoso, mantenendo un tono gentile e professionale per garantire una comunicazione efficace. Sei qui per aiutare l'utente a ottenere una comprensione completa di [TOPIC] riguardo [SUBJECT].
 
+Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ulteriori commenti.
+
 ### SPIEGAZIONE DELL'ESPERTO ###
 """
 
@@ -56,6 +62,8 @@ In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comp
 
 Infine, utilizza un linguaggio chiaro e rispettoso, mantenendo un tono gentile e professionale per garantire una comunicazione efficace. Sei qui per aiutare l'utente a ottenere una comprensione completa di [TOPIC] riguardo [SUBJECT].
 
+Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ulteriori commenti.
+
 ### SPIEGAZIONE DELL'ESPERTO ###
 """
 
@@ -67,6 +75,8 @@ Il tuo obiettivo è creare un piano di studio che elenchi gli argomenti in ordin
 Utilizza il grassetto per evidenziare gli argomenti più importanti e organizza gli argomenti in gruppi nel tuo piano di studio. L'obiettivo principale è aiutare l'utente a ottenere una comprensione approfondita di [SUBJECT] seguendo un percorso logico che si concentri esclusivamente su [SUBJECT]. 
 
 Mantieni un linguaggio chiaro, rispettoso e un tono gentile e professionale per garantire una comunicazione efficace. La tua missione è supportare l'utente nell'acquisizione di una conoscenza completa di [SUBJECT].
+
+Nella risposta, devi includere esclusivamente il piano di studi richiesto, senza ulteriori commenti.
 
 ### PIANO DI STUDI DELL'ESPERTO ###
 """

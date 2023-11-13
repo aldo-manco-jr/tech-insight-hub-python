@@ -627,7 +627,7 @@ def generate_text_utility_prompt(data):
 
     if data["Language"] == "Italian":
         prompt += """
-Sei un esperto professore di letteratura italiana e sei stato chiamato a fornire assistenza a un utente che ha scritto il seguente testo [TEXT], in cui la grammatica non è perfetta e la chiarezza è compromessa. Il tuo obiettivo è analizzare attentamente il testo [TEXT] al fine di comprendere appieno i ragionamenti logici che vengono espressi. Successivamente, devi riscrivere il testo [TEXT] in una forma grammaticalmente perfetta e assicurarti che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comunicare in modo efficace attraverso il testo.
+Sei un esperto professore di letteratura italiana e sei stato chiamato a fornire assistenza a un utente che ha scritto il seguente testo [TEXT], in cui la grammatica non è perfetta e la chiarezza è compromessa. Il tuo obiettivo è analizzare attentamente il testo [TEXT] al fine di comprendere appieno i ragionamenti logici che vengono espressi. Successivamente, devi riscrivere il testo [TEXT] in una forma grammaticalmente perfetta e assicurarti che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comunicare in modo efficace attraverso il testo. Nella risposta, devi includere esclusivamente il testo richiesto, senza ulteriori spiegazioni o commenti.
         """
 
         if data["Translate"] == "Yes":
@@ -665,7 +665,7 @@ In aggiunta, il testo deve avere una lunghezza massima di [LENGTH].
 
     elif data["Language"] == "English":
         prompt += """
-You are an expert professor of english literature and have been called upon to assist a user who has written the following text [TEXT], in which the grammar is not perfect, and clarity is compromised. Your goal is to carefully analyze the text [TEXT] to fully understand the logical reasoning being expressed. Subsequently, you must rewrite the text [TEXT] in a grammatically perfect form and ensure that the concepts are expressed with the utmost clarity and without ambiguity. Your expertise is crucial in helping the user communicate effectively through the text.
+You are an expert professor of english literature and have been called upon to assist a user who has written the following text [TEXT], in which the grammar is not perfect, and clarity is compromised. Your goal is to carefully analyze the text [TEXT] to fully understand the logical reasoning being expressed. Subsequently, you must rewrite the text [TEXT] in a grammatically perfect form and ensure that the concepts are expressed with the utmost clarity and without ambiguity. Your expertise is crucial in helping the user communicate effectively through the text. In your response, you should include exclusively the requested text, without additional explanations or comments.
                 """
 
         if data["Translate"] == "Yes":
@@ -699,10 +699,55 @@ Additionally, the text must have a maximum length of [LENGTH].
 
     return prompt
 
+
+def generate_lyrics_prompt(data):
+    prompt = f"""
+### PLOT: "{data['Plot']}" ###
+
+### LANGUAGE: "{data['Language']}" ###
+            """
+
+    if data["Plot"] != "" and data["Language"] != "":
+        prompt += """
+Sei un rinomato autore di testi musicali in lingua [LANGUAGE], e ti è stato richiesto di assistere un cantante che ha ideato una trama specifica per una canzone [PLOT], la quale narra una scena di profondo significato. Il tuo compito primario è di analizzare minuziosamente questa trama per comprendere a fondo sia la scena che le implicazioni logiche ed emotive. Dovrai poi scrivere un testo per la canzone in lingua [LANGUAGE], assicurandoti che tanto la scena quanto i ragionamenti logici ed emotivi siano presentati chiaramente e senza ambiguità. La tua abilità è cruciale per supportare il cantante nell'esprimere efficacemente il messaggio che intende trasmettere al suo pubblico. Nella tua risposta, dovrai limitarti a includere solo il testo richiesto, senza ulteriori spiegazioni o commenti.
+        """
+
+        if data["Songwriter Style"] != "":
+            prompt += """
+### SONGWRITER STYLE: "{data['Songwriter Style']}" ###
+
+Il testo in lingua [LANGUAGE] dovrà essere scritto seguendo lo stile specifico del cantautore [SONGWRITER STYLE].
+                    """
+
+        if data["Rhyme Type"] != "":
+            prompt += """
+### RHYME TYPE: "{data['Rhyme Type']}" ###
+
+Il testo dovrà essere scritto utilizzando il seguente tipo di rima [RHYME TYPE]. 
+            """
+
+        if data["Structure"] != "":
+            prompt += """
+### SONG STRUCTURE AND NUMBER OF VERSES PER SECTION: "{data['Structure']}" ###
+
+La canzone avrà la seguente struttura ben definita con un numero preciso di versi definiti per ogni sezione [STRUCTURE].          
+                """
+
+        if data["Syllables For Verse"] != "":
+            prompt += """
+### SYLLABLES FOR VERSE: "{data['Syllables For Verse']}" ###
+
+Il testo dovrà essere scritto tale che ogni verso dovrà contenere il seguente numero di sillabe [SYLLABLES FOR VERSE].
+            """
+    else:
+        prompt = 'error'
+
+    return prompt
+
 def main():
 
     st.title("TechInsight Hub")
-    tab = st.selectbox("Select Tab", ["Learning", "Documentation", "Debugging", "Crafting", "Text Utilities"])
+    tab = st.selectbox("Select Tab", ["Learning", "Documentation", "Debugging", "Crafting", "Text Utilities", "Lyrics"])
 
     if tab == "Learning":
         st.subheader("Learning Tab")
@@ -811,6 +856,29 @@ def main():
                 "Length": length
             }
             prompt = generate_text_utility_prompt(data)
+            st.text(prompt)
+            pyperclip.copy(prompt)
+
+    elif tab == "Lyrics":
+        st.subheader("Lyrics Tab")
+
+        plot = st.text_area("Plot")
+        language = st.text_area("Language")
+        songwriter_style = st.text_area("Songwriter Style")
+        rhyme_type = st.text_area("Rhyme Type")
+        structure = st.text_area("Structure")
+        syllables_for_verse = st.text_area("Syllables For Verse")
+
+        if st.button("Generate Prompt"):
+            data = {
+                "Plot": plot,
+                "Language": language,
+                "Songwriter Style": songwriter_style,
+                "Rhyme Type": rhyme_type,
+                "Structure": structure,
+                "Syllables For Verse": syllables_for_verse
+            }
+            prompt = generate_lyrics_prompt(data)
             st.text(prompt)
             pyperclip.copy(prompt)
 
