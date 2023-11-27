@@ -441,25 +441,38 @@ def generate_crafting_prompt(data):
     if data['Programming Language'] != "":
         if data['Details'] != "":
             if data['Design Pattern'] != "":
-                if data['Documentation'] == "Yes":
-                    prompt = generate_crafting_documented_structured_implementation_prompt(data)
+                if data['Source Code'] != "":
+                    prompt = generate_crafting_edited_structured_implementation_prompt(data)
                 else:
                     prompt = generate_crafting_structured_implementation_prompt(data)
             else:
-                if data['Documentation'] == "Yes":
-                    prompt = generate_crafting_documented_implementation_prompt(data)
+                if data['Source Code'] != "":
+                    prompt = generate_crafting_edited_implementation_prompt(data)
                 else:
                     prompt = generate_crafting_implementation_prompt(data)
         else:
             if data['Design Pattern'] != "":
-                if data['Documentation'] == "Yes":
-                    prompt = generate_crafting_documented_structure_prompt(data)
+                if data['Source Code'] != "":
+                    prompt = generate_crafting_designed_implementation_prompt(data)
                 else:
                     prompt = generate_crafting_structure_prompt(data)
             else:
-                prompt = "error"
+                if data['Source Code'] != "":
+                    prompt = generate_crafting_improved_implementation_prompt(data)
+                else:
+                    prompt = "error"
     else:
         prompt = "error"
+
+    if prompt != "error":
+        if data["Documentation"] == "Yes":
+            prompt += """
+Crea una documentazione con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comunicare in modo efficace la tua implementazione.
+
+            """
+        prompt += """
+### IMPLEMENTAZIONE PROPOSTA ###
+        """
 
     return prompt
 
@@ -540,7 +553,7 @@ def generate_crafting_structured_implementation_prompt(data):
     return prompt
 
 
-def generate_crafting_documented_structured_implementation_prompt(data):
+def generate_crafting_edited_structured_implementation_prompt(data):
 
     if data['Library | Package'] != "":
         prompt = f"""
@@ -548,27 +561,31 @@ def generate_crafting_documented_structured_implementation_prompt(data):
 
 ### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
 
-### DETAILS: "{data['Details']}" ###
-
 ### DESIGN PATTERN: "{data['Design Pattern']}" ###
 
-{crafting_prompt.crafting_documented_structured_implementation_prompt_with_library}
+### DETAILS: "{data['Details']}" ###
+
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_edited_structured_implementation_prompt_with_library}
             """
     else:
         prompt = f"""
 ### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
 
-### DETAILS: "{data['Details']}" ###
-
 ### DESIGN PATTERN: "{data['Design Pattern']}" ###
 
-{crafting_prompt.crafting_documented_structured_implementation_prompt}
+### DETAILS: "{data['Details']}" ###
+
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_edited_structured_implementation_prompt}
             """
 
     return prompt
 
 
-def generate_crafting_documented_structure_prompt(data):
+def generate_crafting_designed_implementation_prompt(data):
 
     if data['Library | Package'] != "":
         prompt = f"""
@@ -578,7 +595,9 @@ def generate_crafting_documented_structure_prompt(data):
 
 ### DESIGN PATTERN: "{data['Design Pattern']}" ###
 
-{crafting_prompt.crafting_documented_structure_prompt_with_library}
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_designed_implementation_prompt_with_library}
             """
     else:
         prompt = f"""
@@ -586,13 +605,39 @@ def generate_crafting_documented_structure_prompt(data):
 
 ### DESIGN PATTERN: "{data['Design Pattern']}" ###
 
-{crafting_prompt.crafting_documented_structure_prompt}
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_designed_implementation_prompt}
             """
 
     return prompt
 
 
-def generate_crafting_documented_implementation_prompt(data):
+def generate_crafting_improved_implementation_prompt(data):
+
+    if data['Library | Package'] != "":
+        prompt = f"""
+### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
+
+### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
+
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_improved_implementation_prompt_with_library}
+            """
+    else:
+        prompt = f"""
+### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
+
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_improved_implementation_prompt}
+            """
+
+    return prompt
+
+
+def generate_crafting_edited_implementation_prompt(data):
 
     if data['Library | Package'] != "":
         prompt = f"""
@@ -602,7 +647,9 @@ def generate_crafting_documented_implementation_prompt(data):
 
 ### DETAILS: "{data['Details']}" ###
 
-{crafting_prompt.crafting_documented_implementation_prompt_with_library}
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_edited_implementation_prompt_with_library}
             """
     else:
         prompt = f"""
@@ -610,7 +657,9 @@ def generate_crafting_documented_implementation_prompt(data):
 
 ### DETAILS: "{data['Details']}" ###
 
-{crafting_prompt.crafting_documented_implementation_prompt}
+### SOURCE CODE: "{data['Source Code']}" ###
+
+{crafting_prompt.crafting_edited_implementation_prompt}
             """
 
     return prompt
@@ -817,6 +866,7 @@ def main():
         library_package = st.text_input("Library | Package To Use")
         design_pattern = st.text_input("Design Pattern")
         details = st.text_area("Details")
+        source_code = st.text_area("Source Code")
         documentation = st.selectbox("Documentation", array_answers, index=array_answers.index("Yes"))
 
         if st.button("Generate Prompt"):
@@ -825,6 +875,7 @@ def main():
                 "Library | Package": library_package,
                 "Design Pattern": design_pattern,
                 "Details": details,
+                "Source Code": source_code,
                 "Documentation": documentation
             }
             prompt = generate_crafting_prompt(data)
