@@ -468,9 +468,13 @@ def generate_crafting_prompt(data):
         if data["Documentation"] == "Yes":
             prompt += """
 Crea una documentazione con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comunicare in modo efficace la tua implementazione.
-
+            """
+        elif data["Documentation"] == "No":
+            prompt += """
+Non commentare il codice, evita di descrivere le informazioni, attributi, funzionalità ed eventuali parametri utilizzando annotazioni.
             """
         prompt += """
+        
 ### IMPLEMENTAZIONE PROPOSTA ###
         """
 

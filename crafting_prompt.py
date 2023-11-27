@@ -7,6 +7,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Nel caso in cui siano necessari più file per implementare il software richiesto, fornisci l'implementazione completa per ogni file.
 """
@@ -19,6 +20,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Nel caso in cui siano necessari più file per implementare il software richiesto, fornisci l'implementazione completa per ogni file.
 """
@@ -31,6 +33,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Nel caso in cui siano necessari più file per implementare il software richiesto, fornisci l'implementazione completa per ogni file.
 """
@@ -43,6 +46,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Nel caso in cui siano necessari più file per implementare il software richiesto, fornisci l'implementazione completa per ogni file.
 """
@@ -55,6 +59,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Nel caso in cui siano necessari più file per implementare il software richiesto, fornisci l'implementazione completa per ogni file.
 """
@@ -67,6 +72,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Nel caso in cui siano necessari più file per implementare il software richiesto, fornisci l'implementazione completa per ogni file.
 """
@@ -79,6 +85,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software migliorato, utilizzando le librerie o i pacchetti [LIBRARY | PACKAGE].
 
@@ -93,6 +100,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software migliorato.
 
@@ -107,6 +115,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software modificato.
 
@@ -121,6 +130,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software modificato.
 
@@ -135,6 +145,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software modificato.
 
@@ -149,6 +160,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software modificato.
 
@@ -163,6 +175,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software modificato.
 
@@ -177,6 +190,7 @@ Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e il tuo 
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
 - Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione.
 
 Devi fornire un'implementazione completa del software modificato.
 
