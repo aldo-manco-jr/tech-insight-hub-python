@@ -110,6 +110,14 @@ def generate_documentation_prompt(data):
     else:
         prompt = 'error'
 
+    if prompt != "error":
+        if data['Documentation Type'] == "Text":
+            prompt += "La spiegazione del codice sorgente [SOURCE CODE] deve essere articolata ragionando passo dopo passo, seguendo una logica precisa. È importante mostrare a video e spiegare un frammento di codice alla volta, accompagnando ciascuna parte con una spiegazione dettagliata. Questa spiegazione deve essere redatta in un italiano grammaticalmente impeccabile, garantendo che i concetti siano espressi con la massima chiarezza e privi di ogni ambiguità. La tua expertise è cruciale per guidare l'utente nella comprensione efficace del codice sorgente [SOURCE CODE]."
+            prompt += "### SPIEGAZIONE DEL CODICE SORGENTE ###"
+        else:
+            prompt += "Crea una documentazione del codice sorgente [SOURCE CODE] con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comprendere in modo efficace il codice sorgente [SOURCE CODE]."
+            prompt += "### DOCUMENTAZIONE DEL CODICE SORGENTE ###"
+
     return prompt
 
 
@@ -138,13 +146,6 @@ def generate_documentation_explained_known_doubt_prompt(data):
 {documentation_prompt.documentation_explained_known_doubt_prompt}
             """
 
-    if data['Documentation Type'] == "Text":
-        prompt += "La spiegazione del codice sorgente [SOURCE CODE] deve essere articolata ragionando passo dopo passo, seguendo una logica precisa. È importante spiegare un frammento di codice alla volta, accompagnando ciascuna parte con una spiegazione dettagliata. Questa spiegazione deve essere redatta in un italiano grammaticalmente impeccabile, garantendo che i concetti siano espressi con la massima chiarezza e privi di ogni ambiguità. La tua expertise è cruciale per guidare l'utente nella comprensione efficace del codice sorgente [SOURCE CODE]."
-        prompt += "### SPIEGAZIONE DEL CODICE SORGENTE ###"
-    else:
-        prompt += "Crea una documentazione del codice sorgente [SOURCE CODE] con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comprendere in modo efficace il codice sorgente [SOURCE CODE]."
-        prompt += "### DOCUMENTAZIONE DEL CODICE SORGENTE ###"
-
     return prompt
 
 
@@ -157,13 +158,6 @@ def generate_documentation_explained_doubt_prompt(data):
 
 {documentation_prompt.documentation_explained_doubt_prompt}
                 """
-
-    if data['Documentation Type'] == "Text":
-        prompt += "La spiegazione del codice sorgente [SOURCE CODE] deve essere articolata ragionando passo dopo passo, seguendo una logica precisa. È importante spiegare un frammento di codice alla volta, accompagnando ciascuna parte con una spiegazione dettagliata. Questa spiegazione deve essere redatta in un italiano grammaticalmente impeccabile, garantendo che i concetti siano espressi con la massima chiarezza e privi di ogni ambiguità. La tua expertise è cruciale per guidare l'utente nella comprensione efficace del codice sorgente [SOURCE CODE]."
-        prompt += "### SPIEGAZIONE DEL CODICE SORGENTE ###"
-    else:
-        prompt += "Crea una documentazione del codice sorgente [SOURCE CODE] con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comprendere in modo efficace il codice sorgente [SOURCE CODE]."
-        prompt += "### DOCUMENTAZIONE DEL CODICE SORGENTE ###"
 
     return prompt
 
@@ -189,13 +183,6 @@ def generate_documentation_documented_known_code_prompt(data):
 {documentation_prompt.documentation_documented_known_code_prompt}
             """
 
-    if data['Documentation Type'] == "Text":
-        prompt += "La spiegazione del codice sorgente [SOURCE CODE] deve essere articolata ragionando passo dopo passo, seguendo una logica precisa. È importante spiegare un frammento di codice alla volta, accompagnando ciascuna parte con una spiegazione dettagliata. Questa spiegazione deve essere redatta in un italiano grammaticalmente impeccabile, garantendo che i concetti siano espressi con la massima chiarezza e privi di ogni ambiguità. La tua expertise è cruciale per guidare l'utente nella comprensione efficace del codice sorgente [SOURCE CODE]."
-        prompt += "### SPIEGAZIONE DEL CODICE SORGENTE ###"
-    else:
-        prompt += "Crea una documentazione del codice sorgente [SOURCE CODE] con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comprendere in modo efficace il codice sorgente [SOURCE CODE]."
-        prompt += "### DOCUMENTAZIONE DEL CODICE SORGENTE ###"
-
     return prompt
 
 
@@ -206,13 +193,6 @@ def generate_documentation_documented_code_prompt(data):
 
     {documentation_prompt.documentation_documented_code_prompt}
                 """
-
-    if data['Documentation Type'] == "Text":
-        prompt += "La spiegazione del codice sorgente [SOURCE CODE] deve essere articolata ragionando passo dopo passo, seguendo una logica precisa. È importante spiegare un frammento di codice alla volta, accompagnando ciascuna parte con una spiegazione dettagliata. Questa spiegazione deve essere redatta in un italiano grammaticalmente impeccabile, garantendo che i concetti siano espressi con la massima chiarezza e privi di ogni ambiguità. La tua expertise è cruciale per guidare l'utente nella comprensione efficace del codice sorgente [SOURCE CODE]."
-        prompt += "### SPIEGAZIONE DEL CODICE SORGENTE ###"
-    else:
-        prompt += "Crea una documentazione del codice sorgente [SOURCE CODE] con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comprendere in modo efficace il codice sorgente [SOURCE CODE]."
-        prompt += "### DOCUMENTAZIONE DEL CODICE SORGENTE ###"
 
     return prompt
 
