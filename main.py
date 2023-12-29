@@ -741,33 +741,33 @@ def generate_lyrics_prompt(data):
             """
 
     if data["Plot"] != "" and data["Language"] != "":
-        prompt += """
+        prompt += f"""
 Sei un rinomato autore di testi musicali in lingua [LANGUAGE], e ti è stato richiesto di assistere un cantante che ha ideato una trama specifica per una canzone [PLOT], la quale narra una scena di profondo significato. Il tuo compito primario è di analizzare minuziosamente questa trama per comprendere a fondo sia la scena che le implicazioni logiche ed emotive. Dovrai poi scrivere un testo per la canzone in lingua [LANGUAGE], assicurandoti che tanto la scena quanto i ragionamenti logici ed emotivi siano presentati chiaramente e senza ambiguità. La tua abilità è cruciale per supportare il cantante nell'esprimere efficacemente il messaggio che intende trasmettere al suo pubblico. Nella tua risposta, dovrai limitarti a includere solo il testo richiesto, senza ulteriori spiegazioni o commenti.
         """
 
         if data["Songwriter Style"] != "":
-            prompt += """
+            prompt += f"""
 ### SONGWRITER STYLE: "{data['Songwriter Style']}" ###
 
 Il testo in lingua [LANGUAGE] dovrà essere scritto seguendo lo stile specifico del cantautore [SONGWRITER STYLE].
                     """
 
         if data["Rhyme Type"] != "":
-            prompt += """
+            prompt += f"""
 ### RHYME TYPE: "{data['Rhyme Type']}" ###
 
 Il testo dovrà essere scritto utilizzando il seguente tipo di rima [RHYME TYPE]. 
             """
 
         if data["Structure"] != "":
-            prompt += """
+            prompt += f"""
 ### SONG STRUCTURE AND NUMBER OF VERSES PER SECTION: "{data['Structure']}" ###
 
 La canzone avrà la seguente struttura ben definita con un numero preciso di versi definiti per ogni sezione [STRUCTURE].          
                 """
 
         if data["Syllables For Verse"] != "":
-            prompt += """
+            prompt += f"""
 ### SYLLABLES FOR VERSE: "{data['Syllables For Verse']}" ###
 
 Il testo dovrà essere scritto tale che ogni verso dovrà contenere il seguente numero di sillabe [SYLLABLES FOR VERSE].
