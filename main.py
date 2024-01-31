@@ -703,7 +703,7 @@ You are an expert professor of english literature and have been called upon to a
 
         if data["Translate"] == "Yes":
             prompt += """
-Additionally, it is necessary to translate the text into English while maintaining grammatical perfection and ensuring that the concepts are expressed with the utmost clarity and without ambiguity.
+Additionally, it is necessary to translate the text into Italian while maintaining grammatical perfection and ensuring that the concepts are expressed with the utmost clarity and without ambiguity.
                     """
 
         if data["Style"] != "":
