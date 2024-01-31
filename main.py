@@ -27,7 +27,7 @@ def generate_learning_prompt(data):
     else:
         prompt = 'error'
 
-    return prompt
+    return replace_newlines_with_space(prompt)
 
 
 def generate_learning_theme_prompt(data):
@@ -118,7 +118,7 @@ def generate_documentation_prompt(data):
             prompt += "Crea una documentazione del codice sorgente [SOURCE CODE] con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comprendere in modo efficace il codice sorgente [SOURCE CODE]."
             prompt += "### DOCUMENTAZIONE DEL CODICE SORGENTE ###"
 
-    return prompt
+    return replace_newlines_with_space(prompt)
 
 
 def generate_documentation_explained_known_doubt_prompt(data):
@@ -225,7 +225,7 @@ def generate_debugging_prompt(data):
     else:
         prompt = "error"
 
-    return prompt
+    return replace_newlines_with_space(prompt)
 
 
 def generate_debugging_detailed_runtime_prompt(data):
@@ -458,7 +458,7 @@ Non commentare il codice, evita di descrivere le informazioni, attributi, funzio
 ### IMPLEMENTAZIONE PROPOSTA ###
         """
 
-    return prompt
+    return replace_newlines_with_space(prompt)
 
 
 def generate_crafting_structure_prompt(data):
@@ -730,7 +730,7 @@ Additionally, carefully analyze the text [TEXT] to understand the logical reason
 Additionally, the text must have a maximum length of [LENGTH].
                     """
 
-    return prompt
+    return replace_newlines_with_space(prompt)
 
 
 def generate_lyrics_prompt(data):
@@ -775,7 +775,11 @@ Il testo dovrà essere scritto tale che ogni verso dovrà contenere il seguente 
     else:
         prompt = 'error'
 
-    return prompt
+    return replace_newlines_with_space(prompt)
+
+def replace_newlines_with_space(input_string):
+    return input_string.replace('\n', ' ')
+
 
 def main():
 
