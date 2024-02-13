@@ -2,7 +2,6 @@ import streamlit as st
 import pyperclip
 
 import documentation_prompt
-import learning_prompt
 import debugging_prompt
 import crafting_prompt
 
@@ -57,6 +56,30 @@ def generate_learning_prompt(data):
         prompt += "error"
         return prompt
 
+    prompt += f"""
+### SUBJECT: "{data['Theme']}" ###
+        """
+
+    if data['Topic'] != "":
+        prompt += f"""
+### TOPIC: "{data['Topic']}" ###
+        """
+
+    if data['Details'] != "":
+        prompt += f"""
+### DETAILS: "{data['Details']}" ###
+        """
+
+    if data['Questions'] != "":
+        prompt += f"""
+### QUESTIONS: "{data['Questions']}" ###
+        """
+
+    if data['What I Know'] != "":
+        prompt += f"""
+### WHAT I KNOW: "{data['What I Know']}" ###
+        """
+
     if data['Theme'] != "" and data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data['What I Know'] == "":
         prompt += """
 Sei un esperto in [SUBJECT] e sei qui per assistere un utente nel suo percorso di studio relativo a [SUBJECT]. L'utente desidera comprendere [SUBJECT] dettagliatamente un passo alla volta.
@@ -64,37 +87,22 @@ Il tuo obiettivo è creare un piano di studio che elenchi gli argomenti in ordin
 Utilizza il grassetto per evidenziare gli argomenti più importanti e organizza gli argomenti in gruppi nel tuo piano di studio. L'obiettivo principale è aiutare l'utente a ottenere una comprensione approfondita di [SUBJECT] seguendo un percorso logico che si concentri esclusivamente su [SUBJECT]. 
 Nella risposta, devi includere esclusivamente il piano di studi richiesto, senza ulteriori commenti.
 ### PIANO DI STUDI DELL'ESPERTO ###    
-    """
+        """
+        return replace_newlines_with_space(prompt)
 
     if data['Theme'] != "" and data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data[
         'What I Know'] != "":
         prompt += """
-    
-    """
-
-    prompt += f"""
-### SUBJECT: "{data['Theme']}" ###
-    """
-
-    if data['Topic'] != "":
-        prompt += f"""
-### TOPIC: "{data['Topic']}" ###
-    """
-
-    if data['Details'] != "":
-        prompt += f"""
-### DETAILS: "{data['Details']}" ###
-    """
-
-    if data['Questions'] != "":
-        prompt += f"""
-### QUESTIONS: "{data['Questions']}" ###
-    """
-
-    if data['What I Know'] != "":
-        prompt += f"""
-### WHAT I KNOW: "{data['What I Know']}" ###
-    """
+Sei un professore in [SUBJECT] e la tua missione è assistere uno studente che deve affrontare un esame universitario in [SUBJECT]. 
+Il tuo compito principale è valutare le conoscenze preesistenti dell'utente [WHAT I KNOW] in relazione a [SUBJECT], applicando rigore e precisione per assegnare un voto tra 0 e 30. 
+Successivamente, individua gli argomenti che lo studente non ha compreso a fondo e offri una spiegazione, partendo da ciò che egli già sa per guidarlo verso una comprensione più approfondita. 
+La tua spiegazione dovrà essere graduale e chiara, partendo dalle basi e avanzando verso concetti più complessi. 
+È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile. 
+Infine, formula un elenco di tre domande numerate, volte a verificare l'assimilazione dello studente su [SUBJECT]. 
+La tua risposta dovrà limitarsi alla valutazione, alle spiegazioni richieste e alle domande, escludendo qualsiasi commento aggiuntivo.
+### VALUTAZIONE E SPIEGAZIONE DEL PROFESSORE ###
+        """
+        return replace_newlines_with_space(prompt)
 
     if data['Theme'] != "" and data['Topic'] != "":
         prompt += """
@@ -181,7 +189,7 @@ def generate_documentation_prompt(data):
 
     # Print values one by one
     if data['Source Code'] != "":
-        if data['Question'] != "":
+        if data['Questions'] != "":
             if data['Programming Language'] != "":
                 prompt = generate_documentation_explained_known_doubt_prompt(data)
             else:
@@ -215,7 +223,7 @@ def generate_documentation_explained_known_doubt_prompt(data):
 
 ### SOURCE CODE: "{data['Source Code']}" ###
 
-### QUESTION: "{data['Question']}" ###
+### QUESTION: "{data['Questions']}" ###
 
 {documentation_prompt.documentation_explained_known_doubt_prompt_with_library}
             """
@@ -225,7 +233,7 @@ def generate_documentation_explained_known_doubt_prompt(data):
 
 ### SOURCE CODE: "{data['Source Code']}" ###
 
-### QUESTION: "{data['Question']}" ###
+### QUESTION: "{data['Questions']}" ###
 
 {documentation_prompt.documentation_explained_known_doubt_prompt}
             """
@@ -238,7 +246,7 @@ def generate_documentation_explained_doubt_prompt(data):
     prompt = f"""
 ### SOURCE CODE: "{data['Source Code']}" ###
 
-### QUESTION: "{data['Question']}" ###
+### QUESTION: "{data['Questions']}" ###
 
 {documentation_prompt.documentation_explained_doubt_prompt}
                 """
@@ -911,7 +919,7 @@ def main():
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package")
         source_code = st.text_area("Source Code")
-        question = st.text_area("Questions")
+        questions = st.text_area("Questions")
         documentation_type = st.selectbox("Documentation Type", array_documentation_type, index=array_documentation_type.index("Text"))
 
         if st.button("Generate Prompt"):
@@ -919,7 +927,7 @@ def main():
                 "Programming Language": programming_language,
                 "Library | Package": library_package,
                 "Source Code": source_code,
-                "Question": question,
+                "Questions": questions,
                 "Documentation Type": documentation_type
             }
             prompt = generate_documentation_prompt(data)
