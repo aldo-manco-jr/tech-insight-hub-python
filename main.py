@@ -13,84 +13,168 @@ st.set_page_config(
     page_icon="icon/rocket_ship.png",
 )
 
+
+def is_valid_learning_form_compilation(data):
+    if data['Theme'] != '' and data['Topic'] == '' and data['Details'] == '' and data['Questions'] == '' and data[
+        'What I Know'] == '':
+        return True
+    if data['Theme'] != '' and data['What I Know'] != '' and data['Topic'] == '' and data['Details'] == '' and data[
+        'Questions'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] == '' and data['Questions'] == '' and data[
+        'What I Know'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['What I Know'] != '' and data['Details'] == '' and data[
+        'Questions'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['Questions'] == '' and data[
+        'What I Know'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['What I Know'] != '' and data[
+        'Questions'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['Questions'] != '' and data['Details'] == '' and data[
+        'What I Know'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['Questions'] != '' and data['What I Know'] != '' and data[
+        'Details'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['Questions'] != '' and data[
+        'What I Know'] == '':
+        return True
+    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['Questions'] != '' and data[
+        'What I Know'] != '':
+        return True
+
+    return False
+
+
 def generate_learning_prompt(data):
 
-    # Print values one by one
+    prompt = ""
+
+    if not is_valid_learning_form_compilation(data):
+        prompt += "error"
+        return prompt
+
+    if data['Theme'] != "" and data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data['What I Know'] == "":
+        prompt += """
+Sei un esperto in [SUBJECT] e sei qui per assistere un utente nel suo percorso di studio relativo a [SUBJECT]. L'utente desidera comprendere [SUBJECT] dettagliatamente un passo alla volta.
+Il tuo obiettivo è creare un piano di studio che elenchi gli argomenti in ordine, partendo dai concetti più semplici relativi a [SUBJECT] e procedendo gradualmente verso quelli più complessi, per far acquisire all'utente una comprensione completa. 
+Utilizza il grassetto per evidenziare gli argomenti più importanti e organizza gli argomenti in gruppi nel tuo piano di studio. L'obiettivo principale è aiutare l'utente a ottenere una comprensione approfondita di [SUBJECT] seguendo un percorso logico che si concentri esclusivamente su [SUBJECT]. 
+Nella risposta, devi includere esclusivamente il piano di studi richiesto, senza ulteriori commenti.
+### PIANO DI STUDI DELL'ESPERTO ###    
+    """
+
+    if data['Theme'] != "" and data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data[
+        'What I Know'] != "":
+        prompt += """
+    
+    """
+
+    prompt += f"""
+### SUBJECT: "{data['Theme']}" ###
+    """
+
+    if data['Topic'] != "":
+        prompt += f"""
+### TOPIC: "{data['Topic']}" ###
+    """
+
+    if data['Details'] != "":
+        prompt += f"""
+### DETAILS: "{data['Details']}" ###
+    """
+
+    if data['Questions'] != "":
+        prompt += f"""
+### QUESTIONS: "{data['Questions']}" ###
+    """
+
+    if data['What I Know'] != "":
+        prompt += f"""
+### WHAT I KNOW: "{data['What I Know']}" ###
+    """
+
+    if data['Theme'] != "" and data['Topic'] != "":
+        prompt += """
+Sei un esperto in [SUBJECT] e la tua missione è assistere un utente che cerca di comprendere 
+    """
+
+    if data['Theme'] != "" and data['Topic'] != "" and data['Details'] != "":
+        prompt += """
+[DETAILS] riguardo 
+    """
+
+    if data['Theme'] != "" and data['Topic'] != "":
+        prompt += """
+[TOPIC]. 
+    """
+
+    if data['Theme'] != "" and data['Details'] != "":
+        prompt += """
+Inizierai esaminando in che contesto si colloca [DETAILS] in [TOPIC], poi 
+    """
+
+    if data['Theme'] != "" and data['Questions'] == "":
+        prompt += """
+Fornirai una spiegazione all'utente. 
+    """
+
+    if data['Theme'] != "" and data['Questions']:
+        prompt += """
+Risponderai alla domanda [QUESTION] che l'utente si pone riguardo 
+    """
+
+    if data['Theme'] != "" and data['Details']:
+        prompt += """
+[DETAILS] nell'ambito di 
+    """
+
     if data['Theme'] != "":
-        if data['Topic'] != "":
-            if data['Details'] != "":
-                prompt = generate_learning_details_prompt(data)
-            else:
-                prompt = generate_learning_topic_prompt(data)
-        else:
-            prompt = generate_learning_theme_prompt(data)
-    else:
-        prompt = 'error'
+        prompt += """
+[TOPIC]. 
+    """
+
+    if data['Theme'] != "" and data['Questions']:
+        prompt += """
+Nella tua risposta, 
+    """
+
+    if data['Theme'] != "":
+        prompt += """
+La spiegazione dovrà essere graduale e chiara, partendo dalle basi e avanzando verso concetti più complessi. È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile. Ricorda di fare degli esempi per chiarire il significato più profondo. 
+    """
+
+    if data['Theme'] != "" and data['What I Know'] != "":
+        prompt += """
+Successivamente, considererai le conoscenze preesistenti dell'utente [WHAT I KNOW] riguardo 
+    """
+
+    if data['Theme'] != "" and data['Details']:
+        prompt += """
+[DETAILS] nell'ambito di 
+    """
+
+    if data['Theme'] != "":
+        prompt += """
+[TOPIC] nel contesto di [SUBJECT] per guidarlo da ciò che già conosce verso una comprensione più ampia. 
+In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comprensione dell'utente riguardo 
+    """
+
+    if data['Theme'] != "" and data['Details']:
+        prompt += """
+[DETAILS] nell'ambito di 
+    """
+
+    if data['Theme'] != "":
+        prompt += """
+[TOPIC]. 
+Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ulteriori commenti. 
+### SPIEGAZIONE DELL'ESPERTO ### 
+    """
 
     return replace_newlines_with_space(prompt)
-
-
-def generate_learning_theme_prompt(data):
-
-    prompt = f"""
-    ### SUBJECT: "{data['Theme']}" ###
-
-    {learning_prompt.learning_theme_prompt}
-            """
-
-    return prompt
-
-
-def generate_learning_topic_prompt(data):
-
-    if data['What I Know'] != "":
-        prompt = f"""
-### SUBJECT: "{data['Theme']}" ###
-
-### TOPIC: "{data['Topic']}" ###
-
-### WHAT I KNOW: "{data['What I Know']}" ###
-
-{learning_prompt.learning_topic_prompt_with_knowledge}
-            """
-    else:
-        prompt = f"""
-### SUBJECT: "{data['Theme']}" ###
-
-### TOPIC: "{data['Topic']}" ###
-
-{learning_prompt.learning_topic_prompt}
-            """
-
-    return prompt
-
-
-def generate_learning_details_prompt(data):
-
-    if data['What I Know'] != "":
-        prompt = f"""
-### SUBJECT: "{data['Theme']}" ###
-
-### TOPIC: "{data['Topic']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### WHAT I KNOW: "{data['What I Know']}" ###
-
-{learning_prompt.learning_details_prompt_with_knowledge}
-            """
-    else:
-        prompt = f"""
-### SUBJECT: "{data['Theme']}" ###
-
-### TOPIC: "{data['Topic']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-{learning_prompt.learning_details_prompt}
-            """
-
-    return prompt
 
 
 def generate_documentation_prompt(data):
@@ -650,13 +734,21 @@ def generate_crafting_edited_implementation_prompt(data):
 
 
 def generate_text_utility_prompt(data):
-    prompt = f"""
+
+    prompt = ""
+
+    if data['Text'] == "":
+        prompt += "error"
+        return prompt
+
+    prompt += f"""
 ### TEXT: "{data['Text']}" ###
+    """
 
-### LANGUAGE: "{data['Language']}" ###
-
+    if data['Style'] != "":
+        prompt += f"""
 ### STYLE: "{data['Style']}" ###
-            """
+    """
 
     if data["Language"] == "Italian":
         prompt += """
@@ -724,6 +816,10 @@ Additionally, the text must be comprehensive, without omitting any expressed inf
             prompt += """
 Additionally, carefully analyze the text [TEXT] to understand the logical reasoning presented and the subject matter at hand, and enhance the content by adding additional details from your knowledge that are relevant to the context.
                     """
+        elif data["In-Depth Analysis"] == "No":
+            prompt += """
+Additionally, carefully analyze the text [TEXT] to understand the logical reasoning expressed within and the subject matter, and enhance the content without including any additional reasoning beyond what is already provided.
+                    """
 
         if data["Length"] > 0:
             prompt += """
@@ -734,46 +830,48 @@ Additionally, the text must have a maximum length of [LENGTH].
 
 
 def generate_lyrics_prompt(data):
-    prompt = f"""
+
+    prompt = ""
+
+    if data['Plot'] == "" or data['Language'] == "":
+        prompt += "error"
+        return prompt
+
+    prompt += f"""
 ### PLOT: "{data['Plot']}" ###
 
 ### LANGUAGE: "{data['Language']}" ###
-            """
 
-    if data["Plot"] != "" and data["Language"] != "":
-        prompt += f"""
 Sei un rinomato autore di testi musicali in lingua [LANGUAGE], e ti è stato richiesto di assistere un cantante che ha ideato una trama specifica per una canzone [PLOT], la quale narra una scena di profondo significato. Il tuo compito primario è di analizzare minuziosamente questa trama per comprendere a fondo sia la scena che le implicazioni logiche ed emotive. Dovrai poi scrivere un testo per la canzone in lingua [LANGUAGE], assicurandoti che tanto la scena quanto i ragionamenti logici ed emotivi siano presentati chiaramente e senza ambiguità. La tua abilità è cruciale per supportare il cantante nell'esprimere efficacemente il messaggio che intende trasmettere al suo pubblico. Nella tua risposta, dovrai limitarti a includere solo il testo richiesto, senza ulteriori spiegazioni o commenti.
-        """
+    """
 
-        if data["Songwriter Style"] != "":
-            prompt += f"""
+    if data["Songwriter Style"] != "":
+        prompt += f"""
 ### SONGWRITER STYLE: "{data['Songwriter Style']}" ###
 
 Il testo in lingua [LANGUAGE] dovrà essere scritto seguendo lo stile specifico del cantautore [SONGWRITER STYLE].
-                    """
+                """
 
-        if data["Rhyme Type"] != "":
-            prompt += f"""
+    if data["Rhyme Type"] != "":
+        prompt += f"""
 ### RHYME TYPE: "{data['Rhyme Type']}" ###
 
 Il testo dovrà essere scritto utilizzando il seguente tipo di rima [RHYME TYPE]. 
-            """
+        """
 
-        if data["Structure"] != "":
-            prompt += f"""
+    if data["Structure"] != "":
+        prompt += f"""
 ### SONG STRUCTURE AND NUMBER OF VERSES PER SECTION: "{data['Structure']}" ###
 
 La canzone avrà la seguente struttura ben definita con un numero preciso di versi definiti per ogni sezione [STRUCTURE].          
-                """
+            """
 
-        if data["Syllables For Verse"] != "":
-            prompt += f"""
+    if data["Syllables For Verse"] != "":
+        prompt += f"""
 ### SYLLABLES FOR VERSE: "{data['Syllables For Verse']}" ###
 
 Il testo dovrà essere scritto tale che ogni verso dovrà contenere il seguente numero di sillabe [SYLLABLES FOR VERSE].
-            """
-    else:
-        prompt = 'error'
+        """
 
     return replace_newlines_with_space(prompt)
 
@@ -791,6 +889,7 @@ def main():
         theme = st.text_input("Theme")
         topic = st.text_input("Topic")
         details = st.text_area("Details")
+        questions = st.text_area("Questions")
         what_i_know = st.text_area("What I Know")
 
         if st.button("Generate Prompt"):
@@ -798,6 +897,7 @@ def main():
                 "Theme": theme,
                 "Topic": topic,
                 "Details": details,
+                "Questions": questions,
                 "What I Know": what_i_know
             }
             prompt = generate_learning_prompt(data)
@@ -811,7 +911,7 @@ def main():
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package")
         source_code = st.text_area("Source Code")
-        question = st.text_area("Question")
+        question = st.text_area("Questions")
         documentation_type = st.selectbox("Documentation Type", array_documentation_type, index=array_documentation_type.index("Text"))
 
         if st.button("Generate Prompt"):
@@ -852,7 +952,7 @@ def main():
 
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package To Use")
-        design_pattern = st.text_input("Design Pattern")
+        design_pattern = st.text_area("Design Pattern")
         details = st.text_area("Details")
         source_code = st.text_area("Source Code")
         documentation = st.selectbox("Documentation", array_answers, index=array_answers.index("Yes"))
