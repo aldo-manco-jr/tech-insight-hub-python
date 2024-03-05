@@ -3,8 +3,6 @@ import pyperclip
 
 import documentation_prompt
 import debugging_prompt
-import crafting_prompt
-
 
 
 st.set_page_config(
@@ -892,8 +890,9 @@ def main():
         library_package = st.text_input("Library | Package To Use")
         details = st.text_area("Details")
         source_code = st.text_area("Source Code")
+        non_functional_requirements = st.text_area("Non-Functional Requirements",
+                                                   value=default_non_functional_requirements)
         design_pattern = st.text_area("Design Pattern")
-        non_functional_requirements = st.text_area("Non-Functional Requirements", value=default_non_functional_requirements);
         documentation = st.selectbox("Documentation", array_answers, index=array_answers.index("Yes"))
 
         if st.button("Generate Prompt"):
@@ -902,8 +901,8 @@ def main():
                 "Library | Package": library_package,
                 "Details": details,
                 "Source Code": source_code,
-                "Design Pattern": design_pattern,
                 "Non Functional Requirements": non_functional_requirements,
+                "Design Pattern": design_pattern,
                 "Documentation": documentation
             }
             prompt = generate_crafting_prompt(data)
