@@ -508,237 +508,159 @@ def generate_debugging_runtime_prompt(data):
     return prompt
 
 
+def is_valid_crafting_form_compilation(data):
+
+    if data['Programming Language'] != '' and data['Non Functional Requirements'] != '' and data['Documentation'] in ["Yes", "No"]:
+
+        if data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
+            'Library | Package'] != '':
+            return True
+        elif data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
+            'Library | Package'] == '':
+            return True
+        elif data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
+            'Library | Package'] != '':
+            return True
+        elif data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
+            'Library | Package'] == '':
+            return True
+        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
+            'Library | Package'] != '':
+            return True
+        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
+            'Library | Package'] == '':
+            return True
+        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
+            'Library | Package'] != '':
+            return True
+        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
+            'Library | Package'] == '':
+            return True
+        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
+            'Library | Package'] != '':
+            return True
+        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
+            'Library | Package'] == '':
+            return True
+        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
+            'Library | Package'] != '':
+            return True
+        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
+            'Library | Package'] == '':
+            return True
+        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
+            'Library | Package'] != '':
+            return True
+        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
+            'Library | Package'] == '':
+            return True
+        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
+            'Library | Package'] != '':
+            return False
+        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
+            'Library | Package'] == '':
+            return False
+
+    return False
+
+
 def generate_crafting_prompt(data):
 
-    if data['Programming Language'] != "":
-        if data['Details'] != "":
-            if data['Design Pattern'] != "":
-                if data['Source Code'] != "":
-                    prompt = generate_crafting_edited_structured_implementation_prompt(data)
-                else:
-                    prompt = generate_crafting_structured_implementation_prompt(data)
-            else:
-                if data['Source Code'] != "":
-                    prompt = generate_crafting_edited_implementation_prompt(data)
-                else:
-                    prompt = generate_crafting_implementation_prompt(data)
-        else:
-            if data['Design Pattern'] != "":
-                if data['Source Code'] != "":
-                    prompt = generate_crafting_designed_implementation_prompt(data)
-                else:
-                    prompt = generate_crafting_structure_prompt(data)
-            else:
-                if data['Source Code'] != "":
-                    prompt = generate_crafting_improved_implementation_prompt(data)
-                else:
-                    prompt = "error"
-    else:
-        prompt = "error"
+    prompt = ""
 
-    if prompt != "error":
-        if data["Documentation"] == "Yes":
-            prompt += """
-Crea una documentazione con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comunicare in modo efficace la tua implementazione.
-            """
-        elif data["Documentation"] == "No":
-            prompt += """
-Non commentare il codice, evita di descrivere le informazioni, attributi, funzionalità ed eventuali parametri utilizzando annotazioni.
-            """
-        prompt += """
-        
-### IMPLEMENTAZIONE PROPOSTA ###
+    if not is_valid_crafting_form_compilation(data):
+        prompt += "error"
+        return prompt
+
+    prompt += f"""
+### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ### 
         """
 
+    if data['Library | Package'] != "":
+        prompt += f"""
+### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
+        """
+
+    if data['Details'] != "":
+        prompt += f"""
+### DETAILS: "{data['Details']}" ### 
+        """
+
+    if data['Source Code'] != "":
+        prompt += f"""
+### SOURCE CODE: "{data['Source Code']}" ### 
+        """
+
+    if data['Design Pattern'] != "":
+        prompt += f"""
+### DESIGN PATTERN: "{data['Design Pattern']}" ### 
+        """
+
+    prompt += f"""
+### NON FUNCTIONAL REQUIREMENTS: "{data['Non Functional Requirements']}" ### 
+    """
+
+    prompt += """
+Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione consiste nel 
+    """
+
+    if data['Source Code'] != "":
+        prompt += f"""
+modificare e migliorare il software [SOURCE CODE] scritto 
+            """
+
+    if data['Source Code'] == "" and data['Design Pattern'] == "":
+        prompt += f"""
+implementare un software 
+           """
+
+    if data['Source Code'] == "" and data['Design Pattern'] != "":
+        prompt += f"""
+implementare il design pattern [DESIGN PATTERN] 
+           """
+
+    prompt += """
+nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. Il software deve aderire alle seguenti specifiche:  
+    """
+
+    if data['Library | Package'] != "":
+        prompt += """
+--- Utilizzare le librerie o i pacchetti  [LIBRARY | PACKAGE]. 
+        """
+
+    if data['Details'] != "":
+        prompt += """
+--- Implementare le specifiche e i requisiti funzionali [DETAILS]. 
+        """
+
+    if data['Non Functional Requirements'] != "":
+        prompt += """
+--- Soddisfare i requisiti non funzionali [NON FUNCTIONAL REQUIREMENTS]. 
+        """
+
+    if data['Design Pattern'] != "" and data['Source Code'] != "":
+        prompt += """
+--- Adottare il design pattern [DESIGN PATTERN]. 
+        """
+
+    prompt += """
+È necessario fornire un'implementazione completa del software. Se l'implementazione richiede più file, dovrai fornire una versione completa per ciascuno di essi. 
+    """
+
+    if data['Documentation'] == "Yes":
+        prompt += """
+Crea una documentazione, inserendo un commento sopra ogni classe e funzione per descrivere informazioni, attributi, funzionalità e eventuali parametri, utilizzando anche le annotazioni. La tua documentazione deve essere redatta in forma grammaticalmente corretta, assicurandoti che i concetti siano espressi con chiarezza e senza ambiguità. 
+        """
+    elif data['Documentation'] == "No":
+        prompt += """
+Non commentare il codice; evita di descrivere informazioni, attributi, funzionalità e eventuali parametri mediante annotazioni. 
+        """
+
+    prompt += """
+### IMPLEMENTAZIONE PROPOSTA ###
+    """
+
     return replace_newlines_with_space(prompt)
-
-
-def generate_crafting_structure_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-{crafting_prompt.crafting_structure_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-{crafting_prompt.crafting_structure_prompt}
-            """
-
-    return prompt
-
-
-def generate_crafting_implementation_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-{crafting_prompt.crafting_implementation_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-{crafting_prompt.crafting_implementation_prompt}
-            """
-
-    return prompt
-
-
-def generate_crafting_structured_implementation_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-{crafting_prompt.crafting_structured_implementation_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-{crafting_prompt.crafting_structured_implementation_prompt}
-            """
-
-    return prompt
-
-
-def generate_crafting_edited_structured_implementation_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_edited_structured_implementation_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_edited_structured_implementation_prompt}
-            """
-
-    return prompt
-
-
-def generate_crafting_designed_implementation_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_designed_implementation_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DESIGN PATTERN: "{data['Design Pattern']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_designed_implementation_prompt}
-            """
-
-    return prompt
-
-
-def generate_crafting_improved_implementation_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_improved_implementation_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_improved_implementation_prompt}
-            """
-
-    return prompt
-
-
-def generate_crafting_edited_implementation_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_edited_implementation_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{crafting_prompt.crafting_edited_implementation_prompt}
-            """
-
-    return prompt
 
 
 def generate_text_utility_prompt(data):
@@ -958,20 +880,30 @@ def main():
         st.subheader("Crafting Tab")
         array_answers = ["Yes", "No"]
 
+        default_non_functional_requirements = """- Rendere il codice sorgente più leggibile e manutenibile, sostituendo gli algoritmi manuali con librerie standard.
+- Assicurare che il codice rispetti le migliori pratiche di [PROGRAMMING LANGUAGE].
+- Ridurre la complessità computazionale e, se possibile, anche quella spaziale.
+- Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
+- Organizzare il codice in sottosistemi indipendenti per facilitare il riutilizzo e migliorare la manutenibilità.
+- Semplificare la logica del software, mantenendone però la funzionalità originale.
+- Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione."""
+
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package To Use")
-        design_pattern = st.text_area("Design Pattern")
         details = st.text_area("Details")
         source_code = st.text_area("Source Code")
+        design_pattern = st.text_area("Design Pattern")
+        non_functional_requirements = st.text_area("Non-Functional Requirements", value=default_non_functional_requirements);
         documentation = st.selectbox("Documentation", array_answers, index=array_answers.index("Yes"))
 
         if st.button("Generate Prompt"):
             data = {
                 "Programming Language": programming_language,
                 "Library | Package": library_package,
-                "Design Pattern": design_pattern,
                 "Details": details,
                 "Source Code": source_code,
+                "Design Pattern": design_pattern,
+                "Non Functional Requirements": non_functional_requirements,
                 "Documentation": documentation
             }
             prompt = generate_crafting_prompt(data)
