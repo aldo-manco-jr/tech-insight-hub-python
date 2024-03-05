@@ -216,7 +216,7 @@ def generate_documentation_prompt(data):
         """
 
     prompt += """
-Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione consiste nel 
+Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione è 
     """
 
     if data['Questions'] != "":
@@ -240,11 +240,11 @@ Lo sviluppatore ti rivolge una o più domande [QUESTIONS] per ottenere chiarimen
 
     if data['Documentation Type'] == "Text":
         prompt += """
-La spiegazione del codice sorgente [SOURCE CODE] deve essere fornita procedendo con ordine, analizzando e spiegando un frammento di codice alla volta. Ogni parte dovrebbe essere accompagnata da una descrizione dettagliata, formulata in italiano grammaticalmente corretto, al fine di assicurare che i concetti siano trasmessi con assoluta chiarezza e privi di ambiguità. 
+La spiegazione del codice sorgente [SOURCE CODE] deve essere fornita procedendo step by step, analizzando e spiegando un frammento di codice alla volta. Ogni parte dovrebbe essere accompagnata da una descrizione dettagliata, formulata in italiano grammaticalmente corretto, al fine di assicurare che i concetti siano trasmessi con assoluta chiarezza e privi di ambiguità. 
         """
     elif data['Documentation Type'] == "Code":
         prompt += """
-È necessario creare una documentazione del codice sorgente [SOURCE CODE], includendo un commento sopra ogni classe e funzione. Questi commenti devono descrivere tutte le informazioni, attributi, funzionalità ed eventuali parametri, facendo anche uso di annotazioni. La tua documentazione deve essere redatta in un italiano impeccabile, garantendo che i concetti siano presentati con la massima chiarezza e privi di ogni ambiguità.
+È necessario creare una documentazione del codice sorgente [SOURCE CODE] step by step, includendo un commento sopra ogni classe e funzione. Questi commenti devono descrivere tutte le informazioni, attributi, funzionalità ed eventuali parametri, facendo anche uso di annotazioni. La tua documentazione deve essere redatta in un italiano impeccabile, garantendo che i concetti siano presentati con la massima chiarezza e privi di ogni ambiguità.
         """
 
     prompt += """
@@ -566,7 +566,7 @@ def generate_crafting_prompt(data):
     """
 
     prompt += """
-Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione consiste nel 
+Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione è 
     """
 
     if data['Source Code'] != "":
@@ -585,7 +585,7 @@ implementare il design pattern [DESIGN PATTERN]
            """
 
     prompt += """
-nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. Il software deve aderire alle seguenti specifiche:  
+nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. Verifica step by step che il software aderisce alle seguenti specifiche: 
     """
 
     if data['Library | Package'] != "":
@@ -623,6 +623,51 @@ Non commentare il codice; evita di descrivere informazioni, attributi, funzional
 
     prompt += """
 ### IMPLEMENTAZIONE PROPOSTA ###
+    """
+
+    return replace_newlines_with_space(prompt)
+
+
+def is_valid_pattern_form_compilation(data):
+
+    if data['Pattern'] != '' and data['Data'] != '':
+        return True
+    return False
+
+
+def generate_pattern_prompt(data):
+
+    prompt = ""
+
+    if not is_valid_pattern_form_compilation(data):
+        prompt += "error"
+        return prompt
+
+    prompt += f"""
+### PATTERN: "{data['Pattern']}" ### 
+        """
+
+    prompt += f"""
+### DATA: "{data['Data']}" ### 
+        """
+
+    if data['Details'] != "":
+        prompt += f"""
+### DETAILS: "{data['Details']}" ### 
+        """
+
+    prompt += """
+Sei uno strumento intelligente capace di identificare un modello e di applicarlo ai dati forniti. La tua missione è assistere un utente che inserisce un testo contenente un modello [PATTERN], dei dati sui quali ripetere tale modello [DATA] 
+    """
+
+    if data['Details'] != "":
+        prompt += """
+e una descrizione che fornisce istruzioni aggiuntive su come identificare correttamente il modello [DETAILS] 
+        """
+
+    prompt += """
+. Devi procedere step by step: innanzitutto, riconoscere il modello all'interno del testo fornito dall'utente; successivamente, applicare il modello riconosciuto ai dati forniti. 
+### PATTERN APPLICATO AI NUOVI DATI ###
     """
 
     return replace_newlines_with_space(prompt)
@@ -777,7 +822,7 @@ def replace_newlines_with_space(input_string):
 def main():
 
     st.title("TechInsight Hub")
-    tab = st.selectbox("Select Tab", ["Learning", "Documentation", "Debugging", "Crafting", "Text Utilities", "Lyrics"])
+    tab = st.selectbox("Select Tab", ["Learning", "Documentation", "Crafting", "Debugging", "Pattern", "Text Utilities", "Lyrics"])
 
     if tab == "Learning":
         st.subheader("Learning Tab")
@@ -821,26 +866,6 @@ def main():
             st.text(prompt)
             pyperclip.copy(prompt)
 
-    elif tab == "Debugging":
-        st.subheader("Debugging Tab")
-        programming_language = st.text_input("Programming Language")
-        library_package = st.text_input("Library | Package")
-        details = st.text_area("Details")
-        error = st.text_area("Compilation | Runtime Error")
-        source_code = st.text_area("Source Code")
-
-        if st.button("Generate Prompt"):
-            data = {
-                "Programming Language": programming_language,
-                "Library | Package": library_package,
-                "Details": details,
-                "Compilation | Runtime Error": error,
-                "Source Code": source_code
-            }
-            prompt = generate_debugging_prompt(data)
-            st.text(prompt)
-            pyperclip.copy(prompt)
-
     elif tab == "Crafting":
         st.subheader("Crafting Tab")
         array_answers = ["Yes", "No"]
@@ -873,6 +898,43 @@ def main():
                 "Documentation": documentation
             }
             prompt = generate_crafting_prompt(data)
+            st.text(prompt)
+            pyperclip.copy(prompt)
+
+    elif tab == "Debugging":
+        st.subheader("Debugging Tab")
+        programming_language = st.text_input("Programming Language")
+        library_package = st.text_input("Library | Package")
+        details = st.text_area("Details")
+        error = st.text_area("Compilation | Runtime Error")
+        source_code = st.text_area("Source Code")
+
+        if st.button("Generate Prompt"):
+            data = {
+                "Programming Language": programming_language,
+                "Library | Package": library_package,
+                "Details": details,
+                "Compilation | Runtime Error": error,
+                "Source Code": source_code
+            }
+            prompt = generate_debugging_prompt(data)
+            st.text(prompt)
+            pyperclip.copy(prompt)
+
+    elif tab == "Pattern":
+        st.subheader("Pattern Tab")
+
+        pattern = st.text_area("Pattern")
+        data = st.text_area("Data")
+        details = st.text_area("Details")
+
+        if st.button("Generate Prompt"):
+            data = {
+                "Pattern": pattern,
+                "Data": data,
+                "Details": details
+            }
+            prompt = generate_pattern_prompt(data)
             st.text(prompt)
             pyperclip.copy(prompt)
 
