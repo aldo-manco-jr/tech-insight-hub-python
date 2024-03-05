@@ -1,7 +1,6 @@
 import streamlit as st
 import pyperclip
 
-import documentation_prompt
 import debugging_prompt
 
 
@@ -183,108 +182,76 @@ Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ul
     return replace_newlines_with_space(prompt)
 
 
+def is_valid_documentation_form_compilation(data):
+
+    if data['Programming Language'] != '' and data['Source Code'] != '' and data['Documentation Type'] in ["Text", "Code"]:
+        return True
+    return False
+
+
 def generate_documentation_prompt(data):
 
-    # Print values one by one
-    if data['Source Code'] != "":
-        if data['Questions'] != "":
-            if data['Programming Language'] != "":
-                prompt = generate_documentation_explained_known_doubt_prompt(data)
-            else:
-                prompt = generate_documentation_explained_doubt_prompt(data)
-        else:
-            if data['Programming Language']:
-                prompt = generate_documentation_documented_known_code_prompt(data)
-            else:
-                prompt = generate_documentation_documented_code_prompt(data)
-    else:
-        prompt = 'error'
+    prompt = ""
 
-    if prompt != "error":
-        if data['Documentation Type'] == "Text":
-            prompt += "La spiegazione del codice sorgente [SOURCE CODE] deve essere articolata ragionando passo dopo passo, seguendo una logica precisa. È importante mostrare a video e spiegare un frammento di codice alla volta, accompagnando ciascuna parte con una spiegazione dettagliata. Questa spiegazione deve essere redatta in un italiano grammaticalmente impeccabile, garantendo che i concetti siano espressi con la massima chiarezza e privi di ogni ambiguità. La tua expertise è cruciale per guidare l'utente nella comprensione efficace del codice sorgente [SOURCE CODE]."
-            prompt += "### SPIEGAZIONE DEL CODICE SORGENTE ###"
-        else:
-            prompt += "Crea una documentazione del codice sorgente [SOURCE CODE] con un commento sopra ogni classe e funzione, descrivendo tutte le informazioni, attributi, funzionalità ed eventuali parametri utilizzando anche le annotazioni. La tua documentazione deve essere scritta in una forma grammaticalmente perfetta, e assicurati che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comprendere in modo efficace il codice sorgente [SOURCE CODE]."
-            prompt += "### DOCUMENTAZIONE DEL CODICE SORGENTE ###"
+    if not is_valid_documentation_form_compilation(data):
+        prompt += "error"
+        return prompt
+
+    prompt += f"""
+### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ### 
+        """
+
+    if data['Library | Package'] != "":
+        prompt += f"""
+### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
+        """
+
+    prompt += f"""
+### SOURCE CODE: "{data['Source Code']}" ### 
+        """
+
+    if data['Questions'] != "":
+        prompt += f"""
+### QUESTIONS: "{data['Questions']}" ### 
+        """
+
+    prompt += """
+Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione consiste nel 
+    """
+
+    if data['Questions'] != "":
+        prompt += """
+assistere un altro sviluppatore che incontra difficoltà nella comprensione del funzionamento di un codice sorgente [SOURCE CODE]. Quest'ultimo fornisce il codice sorgente [SOURCE CODE] scritto nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. 
+        """
+    elif data['Questions'] == "":
+        prompt += """
+documentare il funzionamento di un codice sorgente [SOURCE CODE] scritto nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. 
+        """
+
+    if data['Library | Package'] != "":
+        prompt += """
+Utilizzando specifiche librerie o pacchetti [LIBRARY | PACKAGE]. 
+        """
+
+    if data['Questions'] != "":
+        prompt += """
+Lo sviluppatore ti rivolge una o più domande [QUESTIONS] per ottenere chiarimenti sul funzionamento del codice sorgente [SOURCE CODE].
+        """
+
+    if data['Documentation Type'] == "Text":
+        prompt += """
+La spiegazione del codice sorgente [SOURCE CODE] deve essere fornita procedendo con ordine, analizzando e spiegando un frammento di codice alla volta. Ogni parte dovrebbe essere accompagnata da una descrizione dettagliata, formulata in italiano grammaticalmente corretto, al fine di assicurare che i concetti siano trasmessi con assoluta chiarezza e privi di ambiguità. 
+        """
+    elif data['Documentation Type'] == "Code":
+        prompt += """
+È necessario creare una documentazione del codice sorgente [SOURCE CODE], includendo un commento sopra ogni classe e funzione. Questi commenti devono descrivere tutte le informazioni, attributi, funzionalità ed eventuali parametri, facendo anche uso di annotazioni. La tua documentazione deve essere redatta in un italiano impeccabile, garantendo che i concetti siano presentati con la massima chiarezza e privi di ogni ambiguità.
+        """
+
+    prompt += """
+### DOCUMENTAZIONE DEL CODICE SORGENTE ###
+    """
 
     return replace_newlines_with_space(prompt)
-
-
-def generate_documentation_explained_known_doubt_prompt(data):
-
-    if data['Library | Package'] != "" and data['Programming Language'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### QUESTION: "{data['Questions']}" ###
-
-{documentation_prompt.documentation_explained_known_doubt_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### QUESTION: "{data['Questions']}" ###
-
-{documentation_prompt.documentation_explained_known_doubt_prompt}
-            """
-
-    return prompt
-
-
-def generate_documentation_explained_doubt_prompt(data):
-
-    prompt = f"""
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### QUESTION: "{data['Questions']}" ###
-
-{documentation_prompt.documentation_explained_doubt_prompt}
-                """
-
-    return prompt
-
-
-def generate_documentation_documented_known_code_prompt(data):
-
-    if data['Library | Package'] != "" and data['Programming Language'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{documentation_prompt.documentation_documented_known_code_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{documentation_prompt.documentation_documented_known_code_prompt}
-            """
-
-    return prompt
-
-
-def generate_documentation_documented_code_prompt(data):
-
-    prompt = f"""
-    ### SOURCE CODE: "{data['Source Code']}" ###
-
-    {documentation_prompt.documentation_documented_code_prompt}
-                """
-
-    return prompt
 
 
 def generate_debugging_prompt(data):
@@ -599,7 +566,7 @@ def generate_crafting_prompt(data):
     """
 
     prompt += """
-Sei un esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione consiste nel 
+Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione consiste nel 
     """
 
     if data['Source Code'] != "":
