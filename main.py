@@ -232,7 +232,7 @@ La spiegazione del codice sorgente [SOURCE CODE] deve essere fornita procedendo 
 
 def is_valid_debugging_form_compilation(data):
 
-    if data['Programming Language'] != '' and data['Source Code'] != '':
+    if data['Programming Language'] != '':
         return True
 
     return False
@@ -255,9 +255,10 @@ def generate_debugging_prompt(data):
 ### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
         """
 
-    prompt += f"""
-### SOURCE CODE: "{data['Source Code']}" ### 
-    """
+    if data['Source Code'] != "":
+        prompt += f"""
+    ### SOURCE CODE: "{data['Source Code']}" ### 
+        """
 
     if data['Compilation | Runtime Error'] != "":
         prompt += f"""
@@ -282,9 +283,14 @@ con le librerie/pacchetti [LIBRARY | PACKAGE]
 , si è imbattuto in un errore 
        """
 
-    if data['Compilation | Runtime Error']:
+    if data['Compilation | Runtime Error'] != "":
         prompt += f"""
-di compilazione o di runtime [COMPILATION | RUNTIME ERROR] in questa porzione del codice sorgente [SOURCE CODE] 
+di compilazione o di runtime [COMPILATION | RUNTIME ERROR] 
+           """
+
+    if data['Source Code'] != "":
+        prompt += f"""
+in questa porzione del codice sorgente [SOURCE CODE] 
            """
 
     prompt += """
