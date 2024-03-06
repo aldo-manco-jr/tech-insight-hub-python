@@ -1,8 +1,6 @@
 import streamlit as st
 import pyperclip
 
-import debugging_prompt
-
 
 st.set_page_config(
     page_title="TechInsight Hub",
@@ -11,38 +9,19 @@ st.set_page_config(
 
 
 def is_valid_learning_form_compilation(data):
-    if data['Theme'] != '' and data['Topic'] == '' and data['Details'] == '' and data['Questions'] == '' and data[
-        'What I Know'] == '':
-        return True
-    if data['Theme'] != '' and data['What I Know'] != '' and data['Topic'] == '' and data['Details'] == '' and data[
-        'Questions'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] == '' and data['Questions'] == '' and data[
-        'What I Know'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['What I Know'] != '' and data['Details'] == '' and data[
-        'Questions'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['Questions'] == '' and data[
-        'What I Know'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['What I Know'] != '' and data[
-        'Questions'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['Questions'] != '' and data['Details'] == '' and data[
-        'What I Know'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['Questions'] != '' and data['What I Know'] != '' and data[
-        'Details'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['Questions'] != '' and data[
-        'What I Know'] == '':
-        return True
-    if data['Theme'] != '' and data['Topic'] != '' and data['Details'] != '' and data['Questions'] != '' and data[
-        'What I Know'] != '':
-        return True
 
-    return False
+    if data['Theme'] == '':
+        return False
+
+    if data['Topic'] != '':
+        return True
+    elif data['Topic'] == '':
+        if data['Details'] != '':
+            return False
+        if data['Questions'] != '':
+            return False
+
+    return True
 
 
 def generate_learning_prompt(data):
@@ -77,7 +56,7 @@ def generate_learning_prompt(data):
 ### WHAT I KNOW: "{data['What I Know']}" ###
         """
 
-    if data['Theme'] != "" and data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data['What I Know'] == "":
+    if data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data['What I Know'] == "":
         prompt += """
 Sei un esperto in [SUBJECT] e sei qui per assistere un utente nel suo percorso di studio relativo a [SUBJECT]. L'utente desidera comprendere [SUBJECT] dettagliatamente un passo alla volta.
 Il tuo obiettivo è creare un piano di studio che elenchi gli argomenti in ordine, partendo dai concetti più semplici relativi a [SUBJECT] e procedendo gradualmente verso quelli più complessi, per far acquisire all'utente una comprensione completa. 
@@ -87,7 +66,7 @@ Nella risposta, devi includere esclusivamente il piano di studi richiesto, senza
         """
         return replace_newlines_with_space(prompt)
 
-    if data['Theme'] != "" and data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data[
+    if data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data[
         'What I Know'] != "":
         prompt += """
 Sei un professore in [SUBJECT] e la tua missione è assistere uno studente che deve affrontare un esame universitario in [SUBJECT]. 
@@ -101,79 +80,75 @@ La tua risposta dovrà limitarsi alla valutazione, alle spiegazioni richieste e 
         """
         return replace_newlines_with_space(prompt)
 
-    if data['Theme'] != "" and data['Topic'] != "":
+    if data['Topic'] != "":
         prompt += """
 Sei un esperto in [SUBJECT] e la tua missione è assistere un utente che cerca di comprendere 
     """
 
-    if data['Theme'] != "" and data['Topic'] != "" and data['Details'] != "":
+    if data['Topic'] != "" and data['Details'] != "":
         prompt += """
 [DETAILS] riguardo 
     """
 
-    if data['Theme'] != "" and data['Topic'] != "":
+    if data['Topic'] != "":
         prompt += """
 [TOPIC]. 
     """
 
-    if data['Theme'] != "" and data['Details'] != "":
+    if data['Details'] != "":
         prompt += """
 Inizierai esaminando in che contesto si colloca [DETAILS] in [TOPIC], poi 
     """
 
-    if data['Theme'] != "" and data['Questions'] == "":
+    if data['Questions'] == "":
         prompt += """
 Fornirai una spiegazione all'utente. 
     """
 
-    if data['Theme'] != "" and data['Questions']:
+    if data['Questions']:
         prompt += """
 Risponderai alla domanda [QUESTION] che l'utente si pone riguardo 
     """
 
-    if data['Theme'] != "" and data['Details']:
+    if data['Details']:
         prompt += """
 [DETAILS] nell'ambito di 
     """
 
-    if data['Theme'] != "":
-        prompt += """
+    prompt += """
 [TOPIC]. 
     """
 
-    if data['Theme'] != "" and data['Questions']:
+    if data['Questions']:
         prompt += """
 Nella tua risposta, 
     """
 
-    if data['Theme'] != "":
-        prompt += """
+    prompt += """
 La spiegazione dovrà essere graduale e chiara, partendo dalle basi e avanzando verso concetti più complessi. È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile. Ricorda di fare degli esempi per chiarire il significato più profondo. 
     """
 
-    if data['Theme'] != "" and data['What I Know'] != "":
+    if data['What I Know'] != "":
         prompt += """
 Successivamente, considererai le conoscenze preesistenti dell'utente [WHAT I KNOW] riguardo 
     """
 
-    if data['Theme'] != "" and data['Details']:
+    if data['Details']:
         prompt += """
 [DETAILS] nell'ambito di 
     """
 
-    if data['Theme'] != "":
-        prompt += """
+    prompt += """
 [TOPIC] nel contesto di [SUBJECT] per guidarlo da ciò che già conosce verso una comprensione più ampia. 
 In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comprensione dell'utente riguardo 
     """
 
-    if data['Theme'] != "" and data['Details']:
+    if data['Details']:
         prompt += """
 [DETAILS] nell'ambito di 
     """
 
-    if data['Theme'] != "":
-        prompt += """
+    prompt += """
 [TOPIC]. 
 Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ulteriori commenti. 
 ### SPIEGAZIONE DELL'ESPERTO ### 
@@ -186,6 +161,7 @@ def is_valid_documentation_form_compilation(data):
 
     if data['Programming Language'] != '' and data['Source Code'] != '' and data['Documentation Type'] in ["Text", "Code"]:
         return True
+
     return False
 
 
@@ -254,277 +230,101 @@ La spiegazione del codice sorgente [SOURCE CODE] deve essere fornita procedendo 
     return replace_newlines_with_space(prompt)
 
 
+def is_valid_debugging_form_compilation(data):
+
+    if data['Programming Language'] != '' and data['Source Code'] != '':
+        return True
+
+    return False
+
+
 def generate_debugging_prompt(data):
 
-    if data['Programming Language'] != "":
-        if data['Details'] != "":
-            if data['Compilation | Runtime Error'] != "":
-                if data['Source Code'] != "":
-                    prompt = generate_debugging_located_detailed_runtime_prompt(data)
-                else:
-                    prompt = generate_debugging_detailed_runtime_prompt(data)
-            else:
-                if data['Source Code'] != "":
-                    prompt = generate_debugging_detailed_correction_prompt(data)
-                else:
-                    prompt = generate_debugging_syntactic_prompt(data)
-        else:
-            if data['Compilation | Runtime Error'] != "":
-                if data['Source Code'] != "":
-                    prompt = generate_debugging_located_runtime_prompt(data)
-                else:
-                    prompt = generate_debugging_runtime_prompt(data)
-            else:
-                if data['Source Code'] != "":
-                    prompt = generate_debugging_correction_prompt(data)
-                else:
-                    prompt = "error"
-    else:
-        prompt = "error"
+    prompt = ""
+
+    if not is_valid_debugging_form_compilation(data):
+        prompt += "error"
+        return prompt
+
+    prompt += f"""
+### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ### 
+        """
+
+    if data['Library | Package'] != "":
+        prompt += f"""
+### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
+        """
+
+    prompt += f"""
+### SOURCE CODE: "{data['Source Code']}" ### 
+    """
+
+    if data['Compilation | Runtime Error'] != "":
+        prompt += f"""
+### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ### 
+        """
+
+    if data['Details'] != "":
+        prompt += f"""
+### DETAILS: "{data['Details']}" ### 
+        """
+
+    prompt += """
+Sei un senior developer esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE], e la tua missione è assistere un altro sviluppatore che, nell'implementazione di un software in [PROGRAMMING LANGUAGE] 
+    """
+
+    if data['Library | Package'] != "":
+        prompt += f"""
+con le librerie/pacchetti [LIBRARY | PACKAGE] 
+            """
+
+    prompt += f"""
+, si è imbattuto in un errore 
+       """
+
+    if data['Compilation | Runtime Error']:
+        prompt += f"""
+di compilazione o di runtime [COMPILATION | RUNTIME ERROR] in questa porzione del codice sorgente [SOURCE CODE] 
+           """
+
+    prompt += """
+che non riesce a risolvere. 
+    """
+
+    if data['Details'] != "":
+        prompt += """
+Considera anche il commento personale fornito dallo sviluppatore, nel quale viene spiegato il contesto in cui si è verificato l'errore o forniti ulteriori indizi che potrebbero aiutare a comprendere l'origine dello stesso [DETAILS]. 
+        """
+
+    prompt += """
+Procedendo un passo alla volta, illustra chiaramente i tuoi ragionamenti per aiutare l'utente a comprendere il processo di risoluzione dell'errore.
+--- Passo 1: Analisi dell'Errore
+Analizza l'errore per capirne la natura, che può essere di sintassi, di tipo o di accesso a variabili.
+--- Passo 2: Contesto e Dettagli
+Considera il contesto e i dettagli aggiuntivi forniti legati all'errore per identificare la radice del problema.
+--- Passo 3: Isolamento del Problema
+Isola il problema identificando le parti del codice coinvolte nell'errore e analizzando come queste interagiscono durante l'esecuzione.
+--- Passo 4: Possibili Soluzioni
+Sulla base dell'analisi effettuata, propone soluzioni chiare e giustifica la scelta di ciascuna.
+--- Passo 5: Consigli Pratici
+Offri consigli pratici e best practice del linguaggio o della libreria in uso per evitare errori simili in futuro.
+    """
+
+    prompt += """
+### ANALISI DELL'ERRORE PROPOSTA DALL'ESPERTO ###
+    """
 
     return replace_newlines_with_space(prompt)
-
-
-def generate_debugging_detailed_runtime_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_detailed_runtime_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_detailed_runtime_prompt}
-            """
-
-    return prompt
-
-
-def generate_debugging_located_runtime_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_located_runtime_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_located_runtime_prompt}
-            """
-
-    return prompt
-
-
-def generate_debugging_detailed_correction_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-{debugging_prompt.debugging_detailed_correction_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-{debugging_prompt.debugging_detailed_correction_prompt}
-            """
-
-    return prompt
-
-
-def generate_debugging_correction_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{debugging_prompt.debugging_correction_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-{debugging_prompt.debugging_correction_prompt}
-            """
-
-    return prompt
-
-
-def generate_debugging_located_detailed_runtime_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_located_detailed_runtime_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-### SOURCE CODE: "{data['Source Code']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_located_detailed_runtime_prompt}
-            """
-
-    return prompt
-
-
-def generate_debugging_syntactic_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-{debugging_prompt.debugging_syntactic_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### DETAILS: "{data['Details']}" ###
-
-{debugging_prompt.debugging_syntactic_prompt}
-            """
-
-    return prompt
-
-
-def generate_debugging_runtime_prompt(data):
-
-    if data['Library | Package'] != "":
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_runtime_prompt_with_library}
-            """
-    else:
-        prompt = f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ###
-
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ###
-
-{debugging_prompt.debugging_runtime_prompt}
-            """
-
-    return prompt
 
 
 def is_valid_crafting_form_compilation(data):
 
     if data['Programming Language'] != '' and data['Non Functional Requirements'] != '' and data['Documentation'] in ["Yes", "No"]:
 
-        if data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
-            'Library | Package'] != '':
-            return True
-        elif data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
-            'Library | Package'] == '':
-            return True
-        elif data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
-            'Library | Package'] != '':
-            return True
-        elif data['Details'] != '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
-            'Library | Package'] == '':
-            return True
-        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
-            'Library | Package'] != '':
-            return True
-        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
-            'Library | Package'] == '':
-            return True
-        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
-            'Library | Package'] != '':
-            return True
-        elif data['Details'] != '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
-            'Library | Package'] == '':
-            return True
-        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
-            'Library | Package'] != '':
-            return True
-        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] != '' and data[
-            'Library | Package'] == '':
-            return True
-        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
-            'Library | Package'] != '':
-            return True
-        elif data['Details'] == '' and data['Design Pattern'] != '' and data['Source Code'] == '' and data[
-            'Library | Package'] == '':
-            return True
-        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
-            'Library | Package'] != '':
-            return True
-        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] != '' and data[
-            'Library | Package'] == '':
-            return True
-        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
-            'Library | Package'] != '':
+        if data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] == '':
             return False
-        elif data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] == '' and data[
-            'Library | Package'] == '':
-            return False
+
+        return True
 
     return False
 
@@ -632,6 +432,7 @@ def is_valid_pattern_form_compilation(data):
 
     if data['Pattern'] != '' and data['Data'] != '':
         return True
+
     return False
 
 
@@ -673,11 +474,19 @@ e una descrizione che fornisce istruzioni aggiuntive su come identificare corret
     return replace_newlines_with_space(prompt)
 
 
+def is_valid_text_utility_form_compilation(data):
+
+    if data['Text'] != '':
+        return True
+
+    return False
+
+
 def generate_text_utility_prompt(data):
 
     prompt = ""
 
-    if data['Text'] == "":
+    if not is_valid_text_utility_form_compilation(data):
         prompt += "error"
         return prompt
 
@@ -769,11 +578,19 @@ Additionally, the text must have a maximum length of [LENGTH].
     return replace_newlines_with_space(prompt)
 
 
+def is_valid_lyrics_form_compilation(data):
+
+    if data['Plot'] != '' and data['Language'] != '':
+        return True
+
+    return False
+
+
 def generate_lyrics_prompt(data):
 
     prompt = ""
 
-    if data['Plot'] == "" or data['Language'] == "":
+    if not is_valid_lyrics_form_compilation(data):
         prompt += "error"
         return prompt
 
@@ -814,6 +631,7 @@ Il testo dovrà essere scritto tale che ogni verso dovrà contenere il seguente 
         """
 
     return replace_newlines_with_space(prompt)
+
 
 def replace_newlines_with_space(input_string):
     return input_string.replace('\n', ' ')
@@ -905,17 +723,17 @@ def main():
         st.subheader("Debugging Tab")
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package")
-        details = st.text_area("Details")
-        error = st.text_area("Compilation | Runtime Error")
         source_code = st.text_area("Source Code")
+        error = st.text_area("Compilation | Runtime Error")
+        details = st.text_area("Details")
 
         if st.button("Generate Prompt"):
             data = {
                 "Programming Language": programming_language,
                 "Library | Package": library_package,
-                "Details": details,
+                "Source Code": source_code,
                 "Compilation | Runtime Error": error,
-                "Source Code": source_code
+                "Details": details
             }
             prompt = generate_debugging_prompt(data)
             st.text(prompt)
