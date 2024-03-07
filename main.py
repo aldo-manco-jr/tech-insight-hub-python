@@ -80,18 +80,16 @@ La tua risposta dovrà limitarsi alla valutazione, alle spiegazioni richieste e 
         """
         return replace_newlines_with_space(prompt)
 
-    if data['Topic'] != "":
-        prompt += """
-Sei un esperto in [SUBJECT] e la tua missione è assistere un utente che cerca di comprendere 
+    prompt += """
+Sei un professore esperto in [SUBJECT] e la tua missione è insegnare ad un utente 
     """
 
-    if data['Topic'] != "" and data['Details'] != "":
+    if data['Details'] != "":
         prompt += """
 [DETAILS] riguardo 
     """
 
-    if data['Topic'] != "":
-        prompt += """
+    prompt += """
 [TOPIC]. 
     """
 
@@ -100,29 +98,24 @@ Sei un esperto in [SUBJECT] e la tua missione è assistere un utente che cerca d
 Inizierai esaminando in che contesto si colloca [DETAILS] in [TOPIC], poi 
     """
 
-    if data['Questions'] == "":
-        prompt += """
+    prompt += """
 Fornirai una spiegazione all'utente. 
     """
 
     if data['Questions']:
         prompt += """
-Risponderai alla domanda [QUESTION] che l'utente si pone riguardo 
-    """
+Risponderai alle domande [QUESTIONS] che l'utente si pone riguardo 
+        """
 
-    if data['Details']:
+    if data['Questions'] != "" and data['Details'] != "":
         prompt += """
-[DETAILS] nell'ambito di 
-    """
+[DETAILS] nell'ambito di  
+        """
 
-    prompt += """
-[TOPIC]. 
-    """
-
-    if data['Questions']:
+    if data['Questions'] != "":
         prompt += """
-Nella tua risposta, 
-    """
+[TOPIC].
+        """
 
     prompt += """
 La spiegazione dovrà essere graduale e chiara, partendo dalle basi e avanzando verso concetti più complessi. È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile. Ricorda di fare degli esempi per chiarire il significato più profondo. 
@@ -133,13 +126,17 @@ La spiegazione dovrà essere graduale e chiara, partendo dalle basi e avanzando 
 Successivamente, considererai le conoscenze preesistenti dell'utente [WHAT I KNOW] riguardo 
     """
 
-    if data['Details']:
+    if data['What I Know'] != "" and data['Details'] != "":
         prompt += """
 [DETAILS] nell'ambito di 
     """
 
+    if data['What I Know'] != "":
+        prompt += """
+[TOPIC] per guidarlo da ciò che già conosce verso una comprensione più ampia. 
+        """
+
     prompt += """
-[TOPIC] nel contesto di [SUBJECT] per guidarlo da ciò che già conosce verso una comprensione più ampia. 
 In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comprensione dell'utente riguardo 
     """
 
