@@ -1,7 +1,6 @@
 import streamlit as st
 import pyperclip
 
-
 st.set_page_config(
     page_title="TechInsight Hub",
     page_icon="icon/rocket_ship.png",
@@ -9,7 +8,6 @@ st.set_page_config(
 
 
 def is_valid_learning_form_compilation(data):
-
     if data['Theme'] == '':
         return False
 
@@ -25,50 +23,59 @@ def is_valid_learning_form_compilation(data):
 
 
 def generate_learning_prompt(data):
-
-    prompt = ""
+    italian_prompt = ""
+    english_prompt = ""
 
     if not is_valid_learning_form_compilation(data):
-        prompt += "error"
-        return prompt
+        italian_prompt += "Inserimento Non Valido"
+        english_prompt += "Invalid Form"
+        return italian_prompt, english_prompt
 
-    prompt += f"""
+    italian_prompt += f"""
 ### SUBJECT: "{data['Theme']}" ###
         """
 
     if data['Topic'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### TOPIC: "{data['Topic']}" ###
         """
 
     if data['Details'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### DETAILS: "{data['Details']}" ###
         """
 
     if data['Questions'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### QUESTIONS: "{data['Questions']}" ###
         """
 
     if data['What I Know'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### WHAT I KNOW: "{data['What I Know']}" ###
         """
 
+    english_prompt += italian_prompt
+
     if data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data['What I Know'] == "":
-        prompt += """
+        italian_prompt += """
 Sei un esperto in [SUBJECT] e sei qui per assistere un utente nel suo percorso di studio relativo a [SUBJECT]. L'utente desidera comprendere [SUBJECT] dettagliatamente un passo alla volta.
 Il tuo obiettivo è creare un piano di studio che elenchi gli argomenti in ordine, partendo dai concetti più semplici relativi a [SUBJECT] e procedendo gradualmente verso quelli più complessi, per far acquisire all'utente una comprensione completa. 
 Utilizza il grassetto per evidenziare gli argomenti più importanti e organizza gli argomenti in gruppi nel tuo piano di studio. L'obiettivo principale è aiutare l'utente a ottenere una comprensione approfondita di [SUBJECT] seguendo un percorso logico che si concentri esclusivamente su [SUBJECT]. 
 Nella risposta, devi includere esclusivamente il piano di studi richiesto, senza ulteriori commenti.
-### PIANO DI STUDI DELL'ESPERTO ###    
+### PIANO DI STUDI ###
         """
-        return replace_newlines_with_space(prompt)
+        english_prompt += """
+You are an expert in [SUBJECT], and you are here to assist a user on his journey to learn about [SUBJECT] thoroughly, step by step. Your goal is to create a study plan that lists topics in order, starting from the simplest concepts related to [SUBJECT] and gradually moving towards the more complex ones, to give the user a complete understanding.
+Use bold to highlight the most important topics and organize the topics into groups in your study plan. The main goal is to help the user gain a deep understanding of [SUBJECT] by following a logical path that focuses exclusively on [SUBJECT].
+In your response, include only the requested study plan, without further comments.
+### STUDY PLAN ###
+        """
+        return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
     if data['Topic'] == "" and data['Details'] == "" and data['Questions'] == "" and data[
         'What I Know'] != "":
-        prompt += """
+        italian_prompt += """
 Sei un professore in [SUBJECT] e la tua missione è assistere uno studente che deve affrontare un esame universitario in [SUBJECT]. 
 Il tuo compito principale è valutare le conoscenze preesistenti dell'utente [WHAT I KNOW] in relazione a [SUBJECT], applicando rigore e precisione per assegnare un voto tra 0 e 30. 
 Successivamente, individua gli argomenti che lo studente non ha compreso a fondo e offri una spiegazione, partendo da ciò che egli già sa per guidarlo verso una comprensione più approfondita. 
@@ -78,251 +85,242 @@ Infine, formula un elenco di tre domande numerate, volte a verificare l'assimila
 La tua risposta dovrà limitarsi alla valutazione, alle spiegazioni richieste e alle domande, escludendo qualsiasi commento aggiuntivo.
 ### VALUTAZIONE E SPIEGAZIONE DEL PROFESSORE ###
         """
-        return replace_newlines_with_space(prompt)
+        english_prompt += """
+You are a professor in [SUBJECT], tasked with assisting a student preparing for a university exam in [SUBJECT]. 
+Your main duty is to assess the student's existing knowledge [WHAT I KNOW] related to [SUBJECT], with rigor and precision, to assign a grade between 0 and 30. 
+Next, identify the topics the student has not fully understood and provide explanations, starting from what they already know to guide them towards a deeper understanding. 
+Your explanations should be gradual and clear, starting from the basics and moving towards more complex concepts. 
+It's crucial that the explanation is straightforward and simple to ensure it's memorable and easily retained. 
+Finally, devise a list of three numbered questions aimed at verifying the student's understanding of [SUBJECT]. 
+Your response should be limited to the evaluation, required explanations, and questions, excluding any additional comments.
+### PROFESSOR'S EVALUATION AND EXPLANATION ###
+        """
+        return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
-    prompt += """
+    italian_prompt += """
 Sei un professore esperto in [SUBJECT] e la tua missione è insegnare ad un utente 
+    """
+    english_prompt += """
+You're a professor specialized in [SUBJECT], tasked with teaching a user 
     """
 
     if data['Details'] != "":
-        prompt += """
-[DETAILS] riguardo 
-    """
+        italian_prompt += """
+[DETAILS] nell'ambito di 
+        """
+        english_prompt += """
+[DETAILS] in the field of 
+        """
 
-    prompt += """
+    italian_prompt += """
+[TOPIC]. 
+    """
+    english_prompt += """
 [TOPIC]. 
     """
 
     if data['Details'] != "":
-        prompt += """
+        italian_prompt += """
 Inizierai esaminando in che contesto si colloca [DETAILS] in [TOPIC], poi 
-    """
+        """
+        english_prompt += """
+You'll start by exploring the context of [DETAILS] in [TOPIC], then 
+        """
 
-    prompt += """
+    italian_prompt += """
 Fornirai una spiegazione all'utente. 
+    """
+    english_prompt += """
+You will provide an explanation to the user. 
     """
 
     if data['Questions']:
-        prompt += """
+        italian_prompt += """
 Risponderai alle domande [QUESTIONS] che l'utente si pone riguardo 
+        """
+        english_prompt += """
+You'll respond to the questions [QUESTIONS] the user has about 
         """
 
     if data['Questions'] != "" and data['Details'] != "":
-        prompt += """
-[DETAILS] nell'ambito di  
+        italian_prompt += """
+[DETAILS] nell'ambito di 
+        """
+        english_prompt += """
+[DETAILS] in the field of 
         """
 
     if data['Questions'] != "":
-        prompt += """
-[TOPIC].
+        italian_prompt += """
+[TOPIC]. 
+        """
+        english_prompt += """
+[TOPIC]. 
         """
 
-    prompt += """
+    italian_prompt += """
 La spiegazione dovrà essere graduale e chiara, partendo dalle basi e avanzando verso concetti più complessi. È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile. Ricorda di fare degli esempi per chiarire il significato più profondo. 
     """
+    english_prompt += """
+The explanation should be step-by-step and clear, beginning with the fundamentals and progressing to more advanced concepts. It is essential for the explanation to be straightforward and direct to ensure it is memorable and easily retained. Make sure to use examples to elucidate the deeper meaning.
+    """
 
     if data['What I Know'] != "":
-        prompt += """
+        italian_prompt += """
 Successivamente, considererai le conoscenze preesistenti dell'utente [WHAT I KNOW] riguardo 
-    """
-
-    if data['What I Know'] != "" and data['Details'] != "":
-        prompt += """
-[DETAILS] nell'ambito di 
-    """
-
-    if data['What I Know'] != "":
-        prompt += """
-[TOPIC] per guidarlo da ciò che già conosce verso una comprensione più ampia. 
+        """
+        english_prompt += """
+Next, you will consider the user's existing knowledge [WHAT I KNOW] about 
         """
 
-    prompt += """
+    if data['What I Know'] != "" and data['Details'] != "":
+        italian_prompt += """
+[DETAILS] nell'ambito di 
+        """
+        english_prompt += """
+[DETAILS] in the field of 
+        """
+
+    if data['What I Know'] != "":
+        italian_prompt += """
+[TOPIC] per guidarlo da ciò che già conosce verso una comprensione più ampia. 
+        """
+        english_prompt += """
+[TOPIC] to lead him from his existing knowledge to a wider understanding. 
+        """
+
+    italian_prompt += """
 In aggiunta, fai un elenco di tre domande numerate al fine di verificare la comprensione dell'utente riguardo 
+    """
+    english_prompt += """
+Additionally, compile a list of three numbered questions to check the user's comprehension concerning 
     """
 
     if data['Details']:
-        prompt += """
+        italian_prompt += """
 [DETAILS] nell'ambito di 
-    """
+        """
+        english_prompt += """
+[DETAILS] in the field of 
+        """
 
-    prompt += """
+    italian_prompt += """
 [TOPIC]. 
 Nella risposta, devi includere esclusivamente la spiegazione richiesta, senza ulteriori commenti. 
 ### SPIEGAZIONE DELL'ESPERTO ### 
     """
+    english_prompt += """
+[TOPIC]. 
+Your response should exclusively contain the required explanation, without any additional remarks. 
+### EXPERT EXPLANATION ###
+    """
 
-    return replace_newlines_with_space(prompt)
+    return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
 
 def is_valid_documentation_form_compilation(data):
-
-    if data['Programming Language'] != '' and data['Source Code'] != '' and data['Documentation Type'] in ["Text", "Code"]:
+    if data['Programming Language'] != '' and data['Source Code'] != '' and data['Documentation Type'] in ["Text",
+                                                                                                           "Code"]:
         return True
 
     return False
 
 
 def generate_documentation_prompt(data):
-
-    prompt = ""
+    italian_prompt = ""
+    english_prompt = ""
 
     if not is_valid_documentation_form_compilation(data):
-        prompt += "error"
-        return prompt
+        italian_prompt += "Inserimento Non Valido"
+        english_prompt += "Invalid Form"
+        return italian_prompt, english_prompt
 
-    prompt += f"""
+    italian_prompt += f"""
 ### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ### 
         """
 
     if data['Library | Package'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
         """
 
-    prompt += f"""
+    italian_prompt += f"""
 ### SOURCE CODE: "{data['Source Code']}" ### 
         """
 
     if data['Questions'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### QUESTIONS: "{data['Questions']}" ### 
         """
 
-    prompt += """
+    english_prompt += italian_prompt
+
+    italian_prompt += """
 Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione è 
+    """
+    english_prompt += """
+You are a senior developer skilled in the programming language [PROGRAMMING LANGUAGE], and your mission is 
     """
 
     if data['Questions'] != "":
-        prompt += """
-assistere un altro sviluppatore che incontra difficoltà nella comprensione del funzionamento di un codice sorgente [SOURCE CODE]. Quest'ultimo fornisce il codice sorgente [SOURCE CODE] scritto nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. 
+        italian_prompt += """
+spiegare il funzionamento del codice sorgente [SOURCE CODE] scritto nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. 
+        """
+        english_prompt += """
+to explain how the source code [SOURCE CODE] works, which is written in the programming language [PROGRAMMING LANGUAGE]. 
         """
     elif data['Questions'] == "":
-        prompt += """
+        italian_prompt += """
 documentare il funzionamento di un codice sorgente [SOURCE CODE] scritto nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. 
+        """
+        english_prompt += """
+to document how the source code [SOURCE CODE] works, which is written in the programming language [PROGRAMMING LANGUAGE]. 
         """
 
     if data['Library | Package'] != "":
-        prompt += """
-Utilizzando specifiche librerie o pacchetti [LIBRARY | PACKAGE]. 
+        italian_prompt += """
+Sono state utilizzate le librerie o pacchetti [LIBRARY | PACKAGE]. 
+        """
+        english_prompt += """
+Have been used the libraries or packages [LIBRARY | PACKAGE]. 
         """
 
     if data['Questions'] != "":
-        prompt += """
-Lo sviluppatore ti rivolge una o più domande [QUESTIONS] per ottenere chiarimenti sul funzionamento del codice sorgente [SOURCE CODE].
+        italian_prompt += """
+Ti vengono rivolte una o più domande [QUESTIONS] per ottenere chiarimenti sul funzionamento del codice sorgente [SOURCE CODE]. 
+        """
+        english_prompt += """
+You are asked one or more questions [QUESTIONS] to clarify how the source code [SOURCE CODE] works. 
         """
 
     if data['Documentation Type'] == "Text":
-        prompt += """
-La spiegazione del codice sorgente [SOURCE CODE] deve essere fornita procedendo step by step, analizzando e spiegando un frammento di codice alla volta. Ogni parte dovrebbe essere accompagnata da una descrizione dettagliata, formulata in italiano grammaticalmente corretto, al fine di assicurare che i concetti siano trasmessi con assoluta chiarezza e privi di ambiguità. 
+        italian_prompt += """
+La spiegazione del codice sorgente [SOURCE CODE] dovrà essere graduale e chiara, analizzando e spiegando un frammento di codice alla volta. La spiegazione di ogni frammento di codice deve essere fatta partendo dalle basi e avanzando verso concetti più complessi. È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile. 
+        """
+        english_prompt += """
+The explanation of the source code [SOURCE CODE] must be gradual and clear, analyzing and explaining one code snippet at a time. The explanation for each code snippet should start from the basics and move towards more complex concepts. It's crucial that the explanation is simple and direct so that it remains memorable and easily understood. 
         """
     elif data['Documentation Type'] == "Code":
-        prompt += """
-È necessario creare una documentazione del codice sorgente [SOURCE CODE] step by step, includendo un commento sopra ogni classe e funzione. Questi commenti devono descrivere tutte le informazioni, attributi, funzionalità ed eventuali parametri, facendo anche uso di annotazioni. La tua documentazione deve essere redatta in un italiano impeccabile, garantendo che i concetti siano presentati con la massima chiarezza e privi di ogni ambiguità.
+        italian_prompt += """
+La documentazione del codice sorgente [SOURCE CODE] dovrà essere graduale e chiara, analizzando e spiegando cosa astrae ogni classe e le funzionalità di ogni funzione, includendo un commento sopra ogni classe e funzione. Questi commenti devono descrivere tutte le informazioni, attributi, funzionalità ed eventuali parametri, facendo anche uso di annotazioni. La spiegazione di ogni classe o funzione deve essere fatta partendo dalle basi e avanzando verso concetti più complessi. È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile.
+        """
+        english_prompt += """
+The source code documentation [SOURCE CODE] should be gradual and clear, analyzing and explaining what each class abstracts and the functionalities of each function, including a comment above every class and function. These comments must describe all the information, attributes, functionalities, and any parameters, also making use of annotations. The explanation of each class or function should start from the basics and move towards more complex concepts. It's crucial that the explanation is simple and direct so that it remains memorable and easily understandable.
         """
 
-    prompt += """
+    italian_prompt += """
 ### DOCUMENTAZIONE DEL CODICE SORGENTE ###
     """
-
-    return replace_newlines_with_space(prompt)
-
-
-def is_valid_debugging_form_compilation(data):
-
-    if data['Programming Language'] != '':
-        return True
-
-    return False
-
-
-def generate_debugging_prompt(data):
-
-    prompt = ""
-
-    if not is_valid_debugging_form_compilation(data):
-        prompt += "error"
-        return prompt
-
-    prompt += f"""
-### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ### 
-        """
-
-    if data['Library | Package'] != "":
-        prompt += f"""
-### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
-        """
-
-    if data['Source Code'] != "":
-        prompt += f"""
-    ### SOURCE CODE: "{data['Source Code']}" ### 
-        """
-
-    if data['Compilation | Runtime Error'] != "":
-        prompt += f"""
-### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ### 
-        """
-
-    if data['Details'] != "":
-        prompt += f"""
-### DETAILS: "{data['Details']}" ### 
-        """
-
-    prompt += """
-Sei un senior developer esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE], e la tua missione è assistere un altro sviluppatore che, nell'implementazione di un software in [PROGRAMMING LANGUAGE] 
+    english_prompt += """
+### SOURCE CODE DOCUMENTATION ###
     """
 
-    if data['Library | Package'] != "":
-        prompt += f"""
-con le librerie/pacchetti [LIBRARY | PACKAGE] 
-            """
-
-    prompt += f"""
-, si è imbattuto in un errore 
-       """
-
-    if data['Compilation | Runtime Error'] != "":
-        prompt += f"""
-di compilazione o di runtime [COMPILATION | RUNTIME ERROR] 
-           """
-
-    if data['Source Code'] != "":
-        prompt += f"""
-in questa porzione del codice sorgente [SOURCE CODE] 
-           """
-
-    prompt += """
-che non riesce a risolvere. 
-    """
-
-    if data['Details'] != "":
-        prompt += """
-Considera anche il commento personale fornito dallo sviluppatore, nel quale viene spiegato il contesto in cui si è verificato l'errore o forniti ulteriori indizi che potrebbero aiutare a comprendere l'origine dello stesso [DETAILS]. 
-        """
-
-    prompt += """
-Procedendo un passo alla volta, illustra chiaramente i tuoi ragionamenti per aiutare l'utente a comprendere il processo di risoluzione dell'errore.
---- Passo 1: Analisi dell'Errore
-Analizza l'errore per capirne la natura, che può essere di sintassi, di tipo o di accesso a variabili.
---- Passo 2: Contesto e Dettagli
-Considera il contesto e i dettagli aggiuntivi forniti legati all'errore per identificare la radice del problema.
---- Passo 3: Isolamento del Problema
-Isola il problema identificando le parti del codice coinvolte nell'errore e analizzando come queste interagiscono durante l'esecuzione.
---- Passo 4: Possibili Soluzioni
-Sulla base dell'analisi effettuata, propone soluzioni chiare e giustifica la scelta di ciascuna.
---- Passo 5: Consigli Pratici
-Offri consigli pratici e best practice del linguaggio o della libreria in uso per evitare errori simili in futuro.
-    """
-
-    prompt += """
-### ANALISI DELL'ERRORE PROPOSTA DALL'ESPERTO ###
-    """
-
-    return replace_newlines_with_space(prompt)
+    return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
 
 def is_valid_crafting_form_compilation(data):
-
-    if data['Programming Language'] != '' and data['Non Functional Requirements'] != '' and data['Documentation'] in ["Yes", "No"]:
+    if data['Programming Language'] != '' and data['Non Functional Requirements'] != '' and data['Documentation'] in [
+        "Yes", "No"]:
 
         if data['Details'] == '' and data['Design Pattern'] == '' and data['Source Code'] == '':
             return False
@@ -333,106 +331,261 @@ def is_valid_crafting_form_compilation(data):
 
 
 def generate_crafting_prompt(data):
-
-    prompt = ""
+    italian_prompt = ""
+    english_prompt = ""
 
     if not is_valid_crafting_form_compilation(data):
-        prompt += "error"
-        return prompt
+        italian_prompt += "Inserimento Non Valido"
+        english_prompt += "Invalid Form"
+        return italian_prompt, english_prompt
 
-    prompt += f"""
+    italian_prompt += f"""
 ### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ### 
-        """
+    """
 
     if data['Library | Package'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
         """
 
     if data['Details'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### DETAILS: "{data['Details']}" ### 
         """
 
     if data['Source Code'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### SOURCE CODE: "{data['Source Code']}" ### 
         """
 
     if data['Design Pattern'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### DESIGN PATTERN: "{data['Design Pattern']}" ### 
         """
 
-    prompt += f"""
+    italian_prompt += f"""
 ### NON FUNCTIONAL REQUIREMENTS: "{data['Non Functional Requirements']}" ### 
     """
 
-    prompt += """
+    english_prompt += italian_prompt
+
+    italian_prompt += """
 Sei un senior developer esperto del linguaggio di programmazione [PROGRAMMING LANGUAGE] e la tua missione è 
+    """
+    english_prompt += """
+You are a senior developer skilled in the programming language [PROGRAMMING LANGUAGE], and your mission is to 
     """
 
     if data['Source Code'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 modificare e migliorare il software [SOURCE CODE] scritto 
+        """
+        english_prompt += """
+modify and improve the software [SOURCE CODE] written 
+        """
+    elif data['Source Code'] == "":
+        if data['Design Pattern'] == "":
+            italian_prompt += f"""
+implementare un software 
+            """
+            english_prompt += """
+implement a software 
+            """
+        elif data['Design Pattern'] != "":
+            italian_prompt += f"""
+implementare il design pattern [DESIGN PATTERN] 
+            """
+            english_prompt += """
+implement the design pattern [DESIGN PATTERN] 
             """
 
-    if data['Source Code'] == "" and data['Design Pattern'] == "":
-        prompt += f"""
-implementare un software 
-           """
-
-    if data['Source Code'] == "" and data['Design Pattern'] != "":
-        prompt += f"""
-implementare il design pattern [DESIGN PATTERN] 
-           """
-
-    prompt += """
-nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. Verifica step by step che il software aderisce alle seguenti specifiche: 
+    italian_prompt += """
+nel linguaggio di programmazione [PROGRAMMING LANGUAGE]. Step by step, verifica che il software aderisce alle seguenti specifiche: 
+    """
+    english_prompt += """
+in the programming language [PROGRAMMING LANGUAGE]. Step by step, verify that the software adheres to the following specifications: 
     """
 
     if data['Library | Package'] != "":
-        prompt += """
+        italian_prompt += """
 --- Utilizzare le librerie o i pacchetti  [LIBRARY | PACKAGE]. 
+        """
+        english_prompt += """
+--- Use the libraries or packages [LIBRARY | PACKAGE]. 
         """
 
     if data['Details'] != "":
-        prompt += """
+        italian_prompt += """
 --- Implementare le specifiche e i requisiti funzionali [DETAILS]. 
+        """
+        english_prompt += """
+--- Implement the specifications and functional requirements [DETAILS]. 
         """
 
     if data['Non Functional Requirements'] != "":
-        prompt += """
+        italian_prompt += """
 --- Soddisfare i requisiti non funzionali [NON FUNCTIONAL REQUIREMENTS]. 
+        """
+        english_prompt += """
+--- Fulfill the non-functional requirements [NON FUNCTIONAL REQUIREMENTS]. 
         """
 
     if data['Design Pattern'] != "" and data['Source Code'] != "":
-        prompt += """
+        italian_prompt += """
 --- Adottare il design pattern [DESIGN PATTERN]. 
         """
+        english_prompt += """
+--- Adopt the design pattern [DESIGN PATTERN]. 
+        """
 
-    prompt += """
+    italian_prompt += """
 È necessario fornire un'implementazione completa del software. Se l'implementazione richiede più file, dovrai fornire una versione completa per ciascuno di essi. 
+    """
+    english_prompt += """
+It's necessary to provide a complete implementation of the software. If the implementation requires multiple files, you must supply a comprehensive version for each one. 
     """
 
     if data['Documentation'] == "Yes":
-        prompt += """
-Crea una documentazione, inserendo un commento sopra ogni classe e funzione per descrivere informazioni, attributi, funzionalità e eventuali parametri, utilizzando anche le annotazioni. La tua documentazione deve essere redatta in forma grammaticalmente corretta, assicurandoti che i concetti siano espressi con chiarezza e senza ambiguità. 
+        italian_prompt += """
+La documentazione del codice sorgente [SOURCE CODE] dovrà essere graduale e chiara, analizzando e spiegando cosa astrae ogni classe e le funzionalità di ogni funzione, includendo un commento sopra ogni classe e funzione. Questi commenti devono descrivere tutte le informazioni, attributi, funzionalità ed eventuali parametri, facendo anche uso di annotazioni. La spiegazione di ogni classe o funzione deve essere fatta partendo dalle basi e avanzando verso concetti più complessi. È fondamentale che la spiegazione sia semplice e diretta affinché rimanga impressa e sia facilmente memorizzabile.
+        """
+        english_prompt += """
+The source code documentation [SOURCE CODE] should be gradual and clear, analyzing and explaining what each class abstracts and the functionalities of each function, including a comment above every class and function. These comments must describe all the information, attributes, functionalities, and any parameters, also making use of annotations. The explanation of each class or function should start from the basics and move towards more complex concepts. It's crucial that the explanation is simple and direct so that it remains memorable and easily understandable.
         """
     elif data['Documentation'] == "No":
-        prompt += """
+        italian_prompt += """
 Non commentare il codice; evita di descrivere informazioni, attributi, funzionalità e eventuali parametri mediante annotazioni. 
         """
+        english_prompt += """
+Do not comment on the code; avoid describing information, attributes, functionalities, and any parameters through annotations. 
+        """
 
-    prompt += """
-### IMPLEMENTAZIONE PROPOSTA ###
+    italian_prompt += """
+### IMPLEMENTAZIONE ###
+    """
+    english_prompt += """
+### IMPLEMENTATION ###
     """
 
-    return replace_newlines_with_space(prompt)
+    return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
+
+
+def is_valid_debugging_form_compilation(data):
+    if data['Programming Language'] != '':
+        return True
+
+    return False
+
+
+def generate_debugging_prompt(data):
+    italian_prompt = ""
+    english_prompt = ""
+
+    if not is_valid_debugging_form_compilation(data):
+        italian_prompt += "Inserimento Non Valido"
+        english_prompt += "Invalid Form"
+        return italian_prompt, english_prompt
+
+    italian_prompt += f"""
+### PROGRAMMING LANGUAGE: "{data['Programming Language']}" ### 
+        """
+
+    if data['Library | Package'] != "":
+        italian_prompt += f"""
+### LIBRARY | PACKAGE: "{data['Library | Package']}" ### 
+        """
+
+    if data['Source Code'] != "":
+        italian_prompt += f"""
+    ### SOURCE CODE: "{data['Source Code']}" ### 
+        """
+
+    if data['Compilation | Runtime Error'] != "":
+        italian_prompt += f"""
+### COMPILATION | RUNTIME ERROR: "{data['Compilation | Runtime Error']}" ### 
+        """
+
+    if data['Details'] != "":
+        italian_prompt += f"""
+### DETAILS: "{data['Details']}" ### 
+        """
+
+    english_prompt += italian_prompt
+
+    italian_prompt += """
+Sei un senior developer esperto nel linguaggio di programmazione [PROGRAMMING LANGUAGE], e la tua missione è risolvere un errore 
+    """
+    english_prompt += """
+You are a senior developer skilled in the programming language [PROGRAMMING LANGUAGE], and your mission is to fix an error 
+    """
+
+    if data['Compilation | Runtime Error'] != "":
+        italian_prompt += """
+di compilazione o di runtime [COMPILATION | RUNTIME ERROR] 
+        """
+        english_prompt += """
+of compilation or runtime [COMPILATION | RUNTIME ERROR] 
+        """
+
+    italian_prompt += """
+che si è verificato in un software scritto in [PROGRAMMING LANGUAGE] 
+    """
+    english_prompt += """
+which has occurred in a software written in [PROGRAMMING LANGUAGE] 
+    """
+
+    if data['Library | Package'] != "":
+        italian_prompt += f"""
+con le librerie/pacchetti [LIBRARY | PACKAGE] 
+        """
+        english_prompt += """
+using the libraries or packages [LIBRARY | PACKAGE] 
+        """
+
+    if data['Source Code'] != "":
+        italian_prompt += f"""
+verificatosi in questo frammento del codice sorgente [SOURCE CODE]. 
+        """
+        english_prompt += """
+that occurred in this snippet of the source code [SOURCE CODE]. 
+        """
+
+    if data['Details'] != "":
+        italian_prompt += """
+Considera anche [DETAILS] nel quale viene spiegato il contesto in cui si è verificato l'errore e/o vengono forniti ulteriori indizi che potrebbero aiutare a comprendere l'origine dell'errore. 
+        """
+        english_prompt += """
+Also consider [DETAILS] which explains the context in which the error occurred and/or provides additional clues that might help understand the origin of the error. 
+        """
+
+    italian_prompt += """
+Procedendo un passo alla volta, illustra chiaramente i tuoi ragionamenti per aiutare a comprendere il processo di risoluzione dell'errore.
+--- Passo 1: Analizza l'errore per capirne la natura, che può essere di sintassi, di tipo o di accesso a variabili.
+--- Passo 2: Considera il contesto e i dettagli aggiuntivi forniti legati all'errore per identificare la radice del problema.
+--- Passo 3: Isola il problema identificando le parti del codice coinvolte nell'errore e analizzando come queste interagiscono durante l'esecuzione.
+--- Passo 4: Sulla base dell'analisi effettuata, propone soluzioni chiare e giustifica la scelta di ciascuna.
+--- Passo 5: Offri consigli pratici e best practice del linguaggio o della libreria in uso per evitare errori simili in futuro. 
+    """
+    english_prompt += """
+Proceeding one step at a time, clearly illustrate your reasoning to help understand the error resolution process.
+--- Step 1: Analyze the error to understand its nature, which could be syntax, type, or variable access errors.
+--- Step 2: Consider the context and additional details provided related to the error to identify the root of the problem.
+--- Step 3: Isolate the problem by identifying the parts of the code involved in the error and analyzing how they interact during execution.
+--- Step 4: Based on the analysis, propose clear solutions and justify the choice of each.
+--- Step 5: Offer practical advice and best practices of the language or library in use to avoid similar errors in the future. 
+    """
+
+    italian_prompt += """
+### ANALISI DELL'ERRORE ###
+    """
+    english_prompt += """
+### ERROR ANALYSIS ###
+    """
+
+    return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
 
 def is_valid_pattern_form_compilation(data):
-
     if data['Pattern'] != '' and data['Data'] != '':
         return True
 
@@ -440,45 +593,61 @@ def is_valid_pattern_form_compilation(data):
 
 
 def generate_pattern_prompt(data):
-
-    prompt = ""
+    italian_prompt = ""
+    english_prompt = ""
 
     if not is_valid_pattern_form_compilation(data):
-        prompt += "error"
-        return prompt
+        italian_prompt += "Inserimento Non Valido"
+        english_prompt += "Invalid Form"
+        return italian_prompt, english_prompt
 
-    prompt += f"""
+    italian_prompt += f"""
 ### PATTERN: "{data['Pattern']}" ### 
         """
 
-    prompt += f"""
+    italian_prompt += f"""
 ### DATA: "{data['Data']}" ### 
         """
 
     if data['Details'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### DETAILS: "{data['Details']}" ### 
         """
 
-    prompt += """
-Sei uno strumento intelligente capace di identificare un modello e di applicarlo ai dati forniti. La tua missione è assistere un utente che inserisce un testo contenente un modello [PATTERN], dei dati sui quali ripetere tale modello [DATA] 
+    english_prompt += italian_prompt
+
+    italian_prompt += """
+Sei uno strumento intelligente capace di identificare un modello e di applicarlo ai dati forniti. La tua missione è applicare il modello/pattern utilizzato nel testo [PATTERN] ai dati forniti [DATA] 
+    """
+    english_prompt += """
+You are an intelligent tool capable of identifying a pattern and applying it to the provided data. Your mission is to apply the model/pattern used in the text [PATTERN] to the provided data [DATA] 
     """
 
     if data['Details'] != "":
-        prompt += """
-e una descrizione che fornisce istruzioni aggiuntive su come identificare correttamente il modello [DETAILS] 
+        italian_prompt += """
+tenendo in considerazione le istruzioni aggiuntive su come identificare correttamente il modello [DETAILS] 
+        """
+        english_prompt += """
+considering the extra guidelines on how to properly identify the pattern [DETAILS] 
         """
 
-    prompt += """
-. Devi procedere step by step: innanzitutto, riconoscere il modello all'interno del testo fornito dall'utente; successivamente, applicare il modello riconosciuto ai dati forniti. 
+    italian_prompt += """
+. Devi procedere step by step:
+--- Riconoscere il modello all'interno del testo fornito
+--- Successivamente, applicare il modello riconosciuto ai dati forniti. 
 ### PATTERN APPLICATO AI NUOVI DATI ###
     """
+    english_prompt += """
+. You need to follow a step-by-step approach:
+--- Identify the pattern in the text provided
+--- Then, apply the identified pattern to the given data. 
+### PATTERN APPLIED TO NEW DATA ###
+    """
 
-    return replace_newlines_with_space(prompt)
+    return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
 
 def is_valid_text_utility_form_compilation(data):
-
     if data['Text'] != '':
         return True
 
@@ -486,103 +655,90 @@ def is_valid_text_utility_form_compilation(data):
 
 
 def generate_text_utility_prompt(data):
-
-    prompt = ""
+    italian_prompt = ""
+    english_prompt = ""
 
     if not is_valid_text_utility_form_compilation(data):
-        prompt += "error"
-        return prompt
+        italian_prompt += "Inserimento Non Valido"
+        english_prompt += "Invalid Form"
+        return italian_prompt, english_prompt
 
-    prompt += f"""
+    italian_prompt += f"""
 ### TEXT: "{data['Text']}" ###
     """
 
     if data['Style'] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### STYLE: "{data['Style']}" ###
-    """
-
-    if data["Language"] == "Italian":
-        prompt += """
-Sei un esperto professore di letteratura italiana e sei stato chiamato a fornire assistenza a un utente che ha scritto il seguente testo [TEXT], in cui la grammatica non è perfetta e la chiarezza è compromessa. Il tuo obiettivo è analizzare attentamente il testo [TEXT] al fine di comprendere appieno i ragionamenti logici che vengono espressi. Successivamente, devi riscrivere il testo [TEXT] in una forma grammaticalmente perfetta e assicurarti che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comunicare in modo efficace attraverso il testo. Nella risposta, devi includere esclusivamente il testo richiesto, senza ulteriori spiegazioni o commenti.
         """
 
-        if data["Translate"] == "Yes":
-            prompt += """
-In aggiunta, è necessario tradurre il testo in lingua inglese mantenendo una forma grammaticalmente perfetta e assicurandoti che i concetti siano espressi con la massima chiarezza e senza ambiguità.
-            """
+    english_prompt += italian_prompt
 
-        if data["Style"] != "":
-            prompt += """
-In aggiunta, il testo deve essere redatto seguendo lo stile [STYLE].            
-                """
-
-        if data["Simplify"] == "Yes":
-            prompt += """
-In aggiunta, è necessario semplificare il testo eliminando le parti ridondanti e spiegando i concetti espressi nel modo più semplice e chiaro possibile.
-            """
-        elif data["Simplify"] == "No":
-            prompt += """
-In aggiunta, il testo deve essere completo, senza omettere alcuna informazione o concetto espresso.
-            """
-
-        if data["In-Depth Analysis"] == "Yes":
-            prompt += """
-In aggiunta, analizza attentamente il testo [TEXT] per comprendere i ragionamenti logici espressi e la materia di cui si sta trattando, e arricchisci il contenuto aggiungendo ulteriori dettagli di tua conoscenza che risultino pertinenti al contesto.
-            """
-        elif data["In-Depth Analysis"] == "No":
-            prompt += """
-In aggiunta, analizza attentamente il testo [TEXT] per comprendere i ragionamenti logici espressi e di cosa si sta parlando. Ricordati di non aggiungere niente che vada oltre questi ragionamenti.
-            """
-
-        if data["Length"] > 0:
-            prompt += """
-In aggiunta, il testo deve avere una lunghezza massima di [LENGTH].
-            """
-
-    elif data["Language"] == "English":
-        prompt += """
+    italian_prompt += """
+Sei un esperto professore di letteratura italiana e sei stato chiamato a fornire assistenza a un utente che ha scritto il seguente testo [TEXT], in cui la grammatica non è perfetta e la chiarezza è compromessa. Il tuo obiettivo è analizzare attentamente il testo [TEXT] al fine di comprendere appieno i ragionamenti logici che vengono espressi. Successivamente, devi riscrivere il testo [TEXT] in una forma grammaticalmente perfetta e assicurarti che i concetti siano espressi con la massima chiarezza e senza ambiguità. La tua competenza è fondamentale per aiutare l'utente a comunicare in modo efficace attraverso il testo. Nella risposta, devi includere esclusivamente il testo richiesto, senza ulteriori spiegazioni o commenti.
+    """
+    english_prompt += """
 You are an expert professor of english literature and have been called upon to assist a user who has written the following text [TEXT], in which the grammar is not perfect, and clarity is compromised. Your goal is to carefully analyze the text [TEXT] to fully understand the logical reasoning being expressed. Subsequently, you must rewrite the text [TEXT] in a grammatically perfect form and ensure that the concepts are expressed with the utmost clarity and without ambiguity. Your expertise is crucial in helping the user communicate effectively through the text. In your response, you should include exclusively the requested text, without additional explanations or comments.
-                """
+    """
 
-        if data["Translate"] == "Yes":
-            prompt += """
+    if data["Translate"] == "Yes":
+        italian_prompt += """
+In aggiunta, è necessario tradurre il testo in lingua inglese mantenendo una forma grammaticalmente perfetta e assicurandoti che i concetti siano espressi con la massima chiarezza e senza ambiguità.
+        """
+        english_prompt += """
 Additionally, it is necessary to translate the text into Italian while maintaining grammatical perfection and ensuring that the concepts are expressed with the utmost clarity and without ambiguity.
-                    """
+        """
 
-        if data["Style"] != "":
-            prompt += """
+    if data["Style"] != "":
+        italian_prompt += """
+In aggiunta, il testo deve essere redatto seguendo lo stile [STYLE].            
+        """
+        english_prompt += """
 Additionally, the text must be composed following the [STYLE] style.            
-                        """
+        """
 
-        if data["Simplify"] == "Yes":
-            prompt += """
+    if data["Simplify"] == "Yes":
+        italian_prompt += """
+In aggiunta, è necessario semplificare il testo eliminando le parti ridondanti e spiegando i concetti espressi nel modo più semplice e chiaro possibile.
+        """
+        english_prompt += """
 Additionally, it is necessary to simplify the text by removing redundant parts and explaining the concepts in the simplest and clearest manner possible.
-                    """
-        elif data["Simplify"] == "No":
-            prompt += """
+        """
+    elif data["Simplify"] == "No":
+        italian_prompt += """
+In aggiunta, il testo deve essere completo, senza omettere alcuna informazione o concetto espresso.
+        """
+        english_prompt += """
 Additionally, the text must be comprehensive, without omitting any expressed information or concepts.
-                    """
+        """
 
-        if data["In-Depth Analysis"] == "Yes":
-            prompt += """
+    if data["In-Depth Analysis"] == "Yes":
+        italian_prompt += """
+In aggiunta, analizza attentamente il testo [TEXT] per comprendere i ragionamenti logici espressi e la materia di cui si sta trattando, e arricchisci il contenuto aggiungendo ulteriori dettagli di tua conoscenza che risultino pertinenti al contesto.
+        """
+        english_prompt += """
 Additionally, carefully analyze the text [TEXT] to understand the logical reasoning presented and the subject matter at hand, and enhance the content by adding additional details from your knowledge that are relevant to the context.
-                    """
-        elif data["In-Depth Analysis"] == "No":
-            prompt += """
+        """
+    elif data["In-Depth Analysis"] == "No":
+        italian_prompt += """
+In aggiunta, analizza attentamente il testo [TEXT] per comprendere i ragionamenti logici espressi e di cosa si sta parlando. Ricordati di non aggiungere niente che vada oltre questi ragionamenti.
+        """
+        english_prompt += """
 Additionally, carefully analyze the text [TEXT] to understand the logical reasoning expressed within and the subject matter, and enhance the content without including any additional reasoning beyond what is already provided.
-                    """
+        """
 
-        if data["Length"] > 0:
-            prompt += """
+    if data["Length"] > 0:
+        italian_prompt += """
+In aggiunta, il testo deve avere una lunghezza massima di [LENGTH].
+        """
+        english_prompt += """
 Additionally, the text must have a maximum length of [LENGTH].
-                    """
+        """
 
-    return replace_newlines_with_space(prompt)
+    return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
 
 def is_valid_lyrics_form_compilation(data):
-
     if data['Plot'] != '' and data['Language'] != '':
         return True
 
@@ -590,50 +746,90 @@ def is_valid_lyrics_form_compilation(data):
 
 
 def generate_lyrics_prompt(data):
-
-    prompt = ""
+    italian_prompt = ""
+    english_prompt = ""
 
     if not is_valid_lyrics_form_compilation(data):
-        prompt += "error"
-        return prompt
+        italian_prompt += "Inserimento Non Valido"
+        english_prompt += "Invalid Form"
+        return italian_prompt, english_prompt
 
-    prompt += f"""
+    italian_prompt += f"""
 ### PLOT: "{data['Plot']}" ###
+    """
 
-### LANGUAGE: "{data['Language']}" ###
-
-Sei un rinomato autore di testi musicali in lingua [LANGUAGE], e ti è stato richiesto di assistere un cantante che ha ideato una trama specifica per una canzone [PLOT], la quale narra una scena di profondo significato. Il tuo compito primario è di analizzare minuziosamente questa trama per comprendere a fondo sia la scena che le implicazioni logiche ed emotive. Dovrai poi scrivere un testo per la canzone in lingua [LANGUAGE], assicurandoti che tanto la scena quanto i ragionamenti logici ed emotivi siano presentati chiaramente e senza ambiguità. La tua abilità è cruciale per supportare il cantante nell'esprimere efficacemente il messaggio che intende trasmettere al suo pubblico. Nella tua risposta, dovrai limitarti a includere solo il testo richiesto, senza ulteriori spiegazioni o commenti.
+    italian_prompt += f"""
+### LANGUAGE LYRICS: "{data['Language Lyrics']}" ###
     """
 
     if data["Songwriter Style"] != "":
-        prompt += f"""
+        italian_prompt += f"""
 ### SONGWRITER STYLE: "{data['Songwriter Style']}" ###
-
-Il testo in lingua [LANGUAGE] dovrà essere scritto seguendo lo stile specifico del cantautore [SONGWRITER STYLE].
-                """
+        """
 
     if data["Rhyme Type"] != "":
-        prompt += f"""
-### RHYME TYPE: "{data['Rhyme Type']}" ###
-
-Il testo dovrà essere scritto utilizzando il seguente tipo di rima [RHYME TYPE]. 
+        italian_prompt += f"""
+### RHYME TYPE: "{data['Rhyme Type']}" ### 
         """
 
     if data["Structure"] != "":
-        prompt += f"""
-### SONG STRUCTURE AND NUMBER OF VERSES PER SECTION: "{data['Structure']}" ###
-
-La canzone avrà la seguente struttura ben definita con un numero preciso di versi definiti per ogni sezione [STRUCTURE].          
-            """
-
-    if data["Syllables For Verse"] != "":
-        prompt += f"""
-### SYLLABLES FOR VERSE: "{data['Syllables For Verse']}" ###
-
-Il testo dovrà essere scritto tale che ogni verso dovrà contenere il seguente numero di sillabe [SYLLABLES FOR VERSE].
+        italian_prompt += f"""
+### SONG STRUCTURE AND NUMBER OF VERSES PER SECTION: "{data['Structure']}" ###          
         """
 
-    return replace_newlines_with_space(prompt)
+    if data["Syllables For Verse"] != "":
+        italian_prompt += f"""
+### SYLLABLES FOR VERSE: "{data['Syllables For Verse']}" ###
+        """
+
+    english_prompt += italian_prompt
+
+    italian_prompt += """
+Sei un rinomato autore di testi musicali in lingua [LANGUAGE LYRICS], 
+e la tua missione è scrivere un lyrics per una canzone basata sulla trama [PLOT] che ha un significato profondo. 
+Analizza minuziosamente questa trama [PLOT] per comprendere il suo significato profondo e le implicazioni logiche ed emotive. 
+Dovrai poi scrivere un testo per la canzone in lingua [LANGUAGE LYRICS], 
+assicurandoti che tanto la scena quanto i ragionamenti logici ed emotivi siano presentati chiaramente e senza ambiguità. 
+La tua abilità è cruciale per supportare il cantante nell'esprimere efficacemente il messaggio che intende trasmettere al suo pubblico. 
+Nella tua risposta, dovrai limitarti a includere solo il testo richiesto, senza ulteriori spiegazioni o commenti. 
+    """
+    english_prompt += """
+
+    """
+
+    if data["Songwriter Style"] != "":
+        italian_prompt += f"""
+Il testo in lingua [LANGUAGE LYRICS] dovrà essere scritto seguendo lo stile specifico del cantautore [SONGWRITER STYLE]. 
+        """
+        english_prompt += """
+
+        """
+
+    if data["Rhyme Type"] != "":
+        italian_prompt += f"""
+Il testo dovrà essere scritto utilizzando il seguente tipo di rima [RHYME TYPE]. 
+        """
+        english_prompt += """
+
+        """
+
+    if data["Structure"] != "":
+        italian_prompt += f"""
+La canzone avrà la seguente struttura ben definita con un numero preciso di versi definiti per ogni sezione [STRUCTURE]. 
+        """
+        english_prompt += """
+
+        """
+
+    if data["Syllables For Verse"] != "":
+        italian_prompt += f"""
+Il testo dovrà essere scritto tale che ogni verso dovrà contenere il seguente numero di sillabe [SYLLABLES FOR VERSE].
+        """
+        english_prompt += """
+
+        """
+
+    return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
 
 def replace_newlines_with_space(input_string):
@@ -641,17 +837,24 @@ def replace_newlines_with_space(input_string):
 
 
 def main():
-
     st.title("TechInsight Hub")
-    tab = st.selectbox("Select Tab", ["Learning", "Documentation", "Crafting", "Debugging", "Pattern", "Text Utilities", "Lyrics"])
+    tab = st.selectbox("Select Tab",
+                       ["Learning", "Documentation", "Crafting", "Debugging", "Pattern", "Text Utilities", "Lyrics"])
 
     if tab == "Learning":
         st.subheader("Learning Tab")
+        array_languages = ["Italian", "English"]
+
         theme = st.text_input("Theme")
         topic = st.text_input("Topic")
         details = st.text_area("Details")
         questions = st.text_area("Questions")
         what_i_know = st.text_area("What I Know")
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("English")
+        )
 
         if st.button("Generate Prompt"):
             data = {
@@ -661,19 +864,30 @@ def main():
                 "Questions": questions,
                 "What I Know": what_i_know
             }
-            prompt = generate_learning_prompt(data)
+            italian_prompt, english_prompt = generate_learning_prompt(data)
+            prompt = italian_prompt if language == "Italian" else english_prompt
             st.text(prompt)
             pyperclip.copy(prompt)
 
     if tab == "Documentation":
         st.subheader("Documentation Tab")
+        array_languages = ["Italian", "English"]
         array_documentation_type = ["Text", "Code"]
 
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package")
         source_code = st.text_area("Source Code")
         questions = st.text_area("Questions")
-        documentation_type = st.selectbox("Documentation Type", array_documentation_type, index=array_documentation_type.index("Text"))
+        documentation_type = st.selectbox(
+            "Documentation Type",
+            array_documentation_type,
+            index=array_documentation_type.index("Text")
+        )
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("English")
+        )
 
         if st.button("Generate Prompt"):
             data = {
@@ -683,12 +897,14 @@ def main():
                 "Questions": questions,
                 "Documentation Type": documentation_type
             }
-            prompt = generate_documentation_prompt(data)
+            italian_prompt, english_prompt = generate_documentation_prompt(data)
+            prompt = italian_prompt if language == "Italian" else english_prompt
             st.text(prompt)
             pyperclip.copy(prompt)
 
     elif tab == "Crafting":
         st.subheader("Crafting Tab")
+        array_languages = ["Italian", "English"]
         array_answers = ["Yes", "No"]
 
         default_non_functional_requirements = """- Rendere il codice sorgente più leggibile e manutenibile, sostituendo gli algoritmi manuali con librerie standard.
@@ -706,7 +922,16 @@ def main():
         non_functional_requirements = st.text_area("Non-Functional Requirements",
                                                    value=default_non_functional_requirements)
         design_pattern = st.text_area("Design Pattern")
-        documentation = st.selectbox("Documentation", array_answers, index=array_answers.index("Yes"))
+        documentation = st.selectbox(
+            "Documentation",
+            array_answers,
+            index=array_answers.index("No")
+        )
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("English")
+        )
 
         if st.button("Generate Prompt"):
             data = {
@@ -718,17 +943,25 @@ def main():
                 "Design Pattern": design_pattern,
                 "Documentation": documentation
             }
-            prompt = generate_crafting_prompt(data)
+            italian_prompt, english_prompt = generate_crafting_prompt(data)
+            prompt = italian_prompt if language == "Italian" else english_prompt
             st.text(prompt)
             pyperclip.copy(prompt)
 
     elif tab == "Debugging":
         st.subheader("Debugging Tab")
+        array_languages = ["Italian", "English"]
+
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package")
         source_code = st.text_area("Source Code")
         error = st.text_area("Compilation | Runtime Error")
         details = st.text_area("Details")
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("English")
+        )
 
         if st.button("Generate Prompt"):
             data = {
@@ -738,16 +971,23 @@ def main():
                 "Compilation | Runtime Error": error,
                 "Details": details
             }
-            prompt = generate_debugging_prompt(data)
+            italian_prompt, english_prompt = generate_debugging_prompt(data)
+            prompt = italian_prompt if language == "Italian" else english_prompt
             st.text(prompt)
             pyperclip.copy(prompt)
 
     elif tab == "Pattern":
         st.subheader("Pattern Tab")
+        array_languages = ["Italian", "English"]
 
         pattern = st.text_area("Pattern")
         data = st.text_area("Data")
         details = st.text_area("Details")
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("English")
+        )
 
         if st.button("Generate Prompt"):
             data = {
@@ -755,63 +995,87 @@ def main():
                 "Data": data,
                 "Details": details
             }
-            prompt = generate_pattern_prompt(data)
+            italian_prompt, english_prompt = generate_pattern_prompt(data)
+            prompt = italian_prompt if language == "Italian" else english_prompt
             st.text(prompt)
             pyperclip.copy(prompt)
 
     elif tab == "Text Utilities":
         st.subheader("Text Utilities Tab")
-
         array_languages = ["Italian", "English"]
         array_answers = ["Yes", "No"]
 
         text = st.text_area("Text")
-        language = st.selectbox("Language", array_languages, index=array_languages.index("Italian"))
-        translate = st.selectbox("Translate", array_answers, index=array_answers.index("No"))
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("Italian")
+        )
+        translate = st.selectbox(
+            "Translate",
+            array_answers,
+            index=array_answers.index("No")
+        )
         style = st.text_area("Style")
-        simplify = st.selectbox("Simplify", array_answers, index=array_answers.index("No"))
-        in_depth_analysis = st.selectbox("In-Depth Analysis", array_answers, index=array_answers.index("No"))
+        simplify = st.selectbox(
+            "Simplify",
+            array_answers,
+            index=array_answers.index("No")
+        )
+        in_depth_analysis = st.selectbox(
+            "In-Depth Analysis",
+            array_answers,
+            index=array_answers.index("No")
+        )
         length = st.number_input("Length", min_value=0, max_value=4000, value=0, step=1)
 
         if st.button("Generate Prompt"):
             data = {
                 "Text": text,
-                "Language": language,
                 "Translate": translate,
                 "Style": style,
                 "Simplify": simplify,
                 "In-Depth Analysis": in_depth_analysis,
                 "Length": length
             }
-            prompt = generate_text_utility_prompt(data)
+            italian_prompt, english_prompt = generate_text_utility_prompt(data)
+            prompt = italian_prompt if language == "Italian" else english_prompt
             st.text(prompt)
             pyperclip.copy(prompt)
 
     elif tab == "Lyrics":
         st.subheader("Lyrics Tab")
+        array_languages = ["Italian", "English"]
 
         plot = st.text_area("Plot")
-        language = st.text_area("Language")
+        language_lyrics = st.text_area("Language Lyrics")
         songwriter_style = st.text_area("Songwriter Style")
         rhyme_type = st.text_area("Rhyme Type")
         structure = st.text_area("Structure")
         syllables_for_verse = st.text_area("Syllables For Verse")
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("English")
+        )
 
         if st.button("Generate Prompt"):
             data = {
                 "Plot": plot,
-                "Language": language,
+                "Language Lyrics": language_lyrics,
                 "Songwriter Style": songwriter_style,
                 "Rhyme Type": rhyme_type,
                 "Structure": structure,
                 "Syllables For Verse": syllables_for_verse
             }
-            prompt = generate_lyrics_prompt(data)
+            italian_prompt, english_prompt = generate_lyrics_prompt(data)
+            prompt = italian_prompt if language == "Italian" else english_prompt
             st.text(prompt)
             pyperclip.copy(prompt)
 
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("Made by Aldo Manco")
+
 
 if __name__ == "__main__":
     main()
