@@ -27,7 +27,7 @@ def generate_learning_prompt(data):
     english_prompt = ""
 
     if not is_valid_learning_form_compilation(data):
-        italian_prompt += "Inserimento Non Valido"
+        italian_prompt += "Form Non Valido"
         english_prompt += "Invalid Form"
         return italian_prompt, english_prompt
 
@@ -231,7 +231,7 @@ def generate_documentation_prompt(data):
     english_prompt = ""
 
     if not is_valid_documentation_form_compilation(data):
-        italian_prompt += "Inserimento Non Valido"
+        italian_prompt += "Form Non Valido"
         english_prompt += "Invalid Form"
         return italian_prompt, english_prompt
 
@@ -335,7 +335,7 @@ def generate_crafting_prompt(data):
     english_prompt = ""
 
     if not is_valid_crafting_form_compilation(data):
-        italian_prompt += "Inserimento Non Valido"
+        italian_prompt += "Form Non Valido"
         english_prompt += "Invalid Form"
         return italian_prompt, english_prompt
 
@@ -482,7 +482,7 @@ def generate_debugging_prompt(data):
     english_prompt = ""
 
     if not is_valid_debugging_form_compilation(data):
-        italian_prompt += "Inserimento Non Valido"
+        italian_prompt += "Form Non Valido"
         english_prompt += "Invalid Form"
         return italian_prompt, english_prompt
 
@@ -586,7 +586,7 @@ Proceeding one step at a time, clearly illustrate your reasoning to help underst
 
 
 def is_valid_pattern_form_compilation(data):
-    if data['Pattern'] != '' and data['Data'] != '':
+    if data['Pattern'] != '' and data['Data'] != '' and data['Type'] != '':
         return True
 
     return False
@@ -597,12 +597,16 @@ def generate_pattern_prompt(data):
     english_prompt = ""
 
     if not is_valid_pattern_form_compilation(data):
-        italian_prompt += "Inserimento Non Valido"
+        italian_prompt += "Form Non Valido"
         english_prompt += "Invalid Form"
         return italian_prompt, english_prompt
 
-    italian_prompt += f"""
+    if data['Type'] != "":
+        italian_prompt += f"""
 ### PATTERN: "{data['Pattern']}" ### 
+        """
+        italian_prompt += f"""
+### FORMAT: "{data['Pattern']}" ###
         """
 
     italian_prompt += f"""
@@ -616,33 +620,50 @@ def generate_pattern_prompt(data):
 
     english_prompt += italian_prompt
 
-    italian_prompt += """
-Sei uno strumento intelligente capace di identificare un modello e di applicarlo ai dati forniti. La tua missione è applicare il modello/pattern utilizzato nel testo [PATTERN] ai dati forniti [DATA] 
-    """
-    english_prompt += """
-You are an intelligent tool capable of identifying a pattern and applying it to the provided data. Your mission is to apply the model/pattern used in the text [PATTERN] to the provided data [DATA] 
-    """
-
-    if data['Details'] != "":
+    if data['Type'] == "Pattern":
         italian_prompt += """
-tenendo in considerazione le istruzioni aggiuntive su come identificare correttamente il modello [DETAILS] 
+Sei uno strumento intelligente capace di identificare un modello e di applicarlo ai dati forniti. La tua missione è applicare il modello/pattern utilizzato nel testo [PATTERN] ai dati forniti [DATA] 
         """
         english_prompt += """
-considering the extra guidelines on how to properly identify the pattern [DETAILS] 
+You are an intelligent tool capable of identifying a pattern and applying it to the provided data. Your mission is to apply the model/pattern used in the text [PATTERN] to the provided data [DATA] 
+        """
+    elif data['Type'] == "Format":
+        italian_prompt += """
+Sei uno strumento intelligente capace di convertire dei dati forniti in un formato specifico. La tua missione è convertire i dati forniti in [DATA] nel formato [FORMAT] 
+        """
+        english_prompt += """
+You are an intelligent tool capable of converting the data provided into a specific format. Your mission is to convert the data provided in [DATA] into the [FORMAT] format 
         """
 
-    italian_prompt += """
+    if data['Details'] != "":
+        if data['Type'] == "Pattern":
+            italian_prompt += """
+tenendo in considerazione le istruzioni aggiuntive su come identificare correttamente il modello [DETAILS] 
+            """
+            english_prompt += """
+considering the extra guidelines on how to properly identify the pattern [DETAILS] 
+            """
+        elif data['Type'] == "Format":
+            italian_prompt += """
+tenendo in considerazione le istruzioni aggiuntive in [DETAILS] su come convertire correttamente i dati forniti nel formato specificato.
+            """
+            english_prompt += """ 
+considering the extra guidelines in [DETAILS] on how to properly convert the provided data into the specified format.
+            """
+
+    if data['Type'] == "Pattern":
+        italian_prompt += """
 . Devi procedere step by step:
 --- Riconoscere il modello all'interno del testo fornito
 --- Successivamente, applicare il modello riconosciuto ai dati forniti. 
 ### PATTERN APPLICATO AI NUOVI DATI ###
-    """
-    english_prompt += """
+        """
+        english_prompt += """
 . You need to follow a step-by-step approach:
 --- Identify the pattern in the text provided
 --- Then, apply the identified pattern to the given data. 
 ### PATTERN APPLIED TO NEW DATA ###
-    """
+        """
 
     return replace_newlines_with_space(italian_prompt), replace_newlines_with_space(english_prompt)
 
@@ -659,7 +680,7 @@ def generate_text_utility_prompt(data):
     english_prompt = ""
 
     if not is_valid_text_utility_form_compilation(data):
-        italian_prompt += "Inserimento Non Valido"
+        italian_prompt += "Form Non Valido"
         english_prompt += "Invalid Form"
         return italian_prompt, english_prompt
 
@@ -750,7 +771,7 @@ def generate_lyrics_prompt(data):
     english_prompt = ""
 
     if not is_valid_lyrics_form_compilation(data):
-        italian_prompt += "Inserimento Non Valido"
+        italian_prompt += "Form Non Valido"
         english_prompt += "Invalid Form"
         return italian_prompt, english_prompt
 
@@ -979,8 +1000,14 @@ def main():
     elif tab == "Pattern":
         st.subheader("Pattern Tab")
         array_languages = ["Italian", "English"]
+        array_types = ["Pattern", "Format"]
 
-        pattern = st.text_area("Pattern")
+        type = st.selectbox(
+            "Type",
+            array_types,
+            index=array_types.index("Pattern")
+        )
+        pattern = st.text_area("Pattern / Format")
         data = st.text_area("Data")
         details = st.text_area("Details")
         language = st.selectbox(
@@ -993,7 +1020,8 @@ def main():
             data = {
                 "Pattern": pattern,
                 "Data": data,
-                "Details": details
+                "Details": details,
+                "Type": type
             }
             italian_prompt, english_prompt = generate_pattern_prompt(data)
             prompt = italian_prompt if language == "Italian" else english_prompt
