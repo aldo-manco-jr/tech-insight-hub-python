@@ -938,7 +938,7 @@ def main():
         array_languages = ["Italian", "English"]
         array_answers = ["Yes", "No"]
 
-        default_non_functional_requirements = """- Rendere il codice sorgente più leggibile e manutenibile, sostituendo gli algoritmi manuali con librerie standard.
+        italian_default_non_functional_requirements = """- Rendere il codice sorgente più leggibile e manutenibile, sostituendo gli algoritmi manuali con librerie standard.
 - Assicurare che il codice rispetti le migliori pratiche di [PROGRAMMING LANGUAGE].
 - Ridurre la complessità computazionale e, se possibile, anche quella spaziale.
 - Rafforzare la robustezza del software, gestendo eccezioni e scenari vari e verificando l'accuratezza dei dati.
@@ -946,10 +946,24 @@ def main():
 - Semplificare la logica del software, mantenendone però la funzionalità originale.
 - Utilizzare nomi per le classi, le variabili e le funzioni che siano descrittivi ed esplicativi del loro contenuto, evitando però eccessiva estensione."""
 
+        english_default_non_functional_requirements = """- Make the source code more readable and maintainable by replacing manual algorithms with standard libraries.
+- Ensure the code adheres to the best practices of [PROGRAMMING LANGUAGE].
+- Reduce computational complexity and, if possible, spatial complexity as well.
+- Enhance the robustness of the software by handling exceptions and various scenarios and verifying the accuracy of the data.
+- Organize the code into independent subsystems to facilitate reuse and improve maintainability.
+- Simplify the software logic while preserving the original functionality.
+- Use names for classes, variables, and functions that are descriptive and explanatory of their content, avoiding excessive length."""
+
         programming_language = st.text_input("Programming Language")
         library_package = st.text_input("Library | Package To Use")
         details = st.text_area("Details")
         source_code = st.text_area("Source Code")
+        language = st.selectbox(
+            "Language",
+            array_languages,
+            index=array_languages.index("English")
+        )
+        default_non_functional_requirements = italian_default_non_functional_requirements if language == "Italian" else english_default_non_functional_requirements
         non_functional_requirements = st.text_area("Non-Functional Requirements",
                                                    value=default_non_functional_requirements)
         design_pattern = st.text_area("Design Pattern")
@@ -957,11 +971,6 @@ def main():
             "Documentation",
             array_answers,
             index=array_answers.index("No")
-        )
-        language = st.selectbox(
-            "Language",
-            array_languages,
-            index=array_languages.index("English")
         )
 
         if st.button("Generate Prompt"):
